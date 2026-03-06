@@ -46,7 +46,7 @@ void print(struct DATA *head) {
     }
 }
 
-struct DATA *create(int n) {
+struct DATA *create_circle(int n) {
     struct DATA *head = NULL, *p1 = NULL, *p2 = NULL;
     int i;
     for (i = 1; i <= n; i++) {
@@ -111,10 +111,10 @@ int main() {
     int n;
     long del_num;
     scanf("%d", &n);
-    head = create(n);
+    head = create_circle(n);
 
     scanf("%d", &n);
-    head2 = create(n);
+    head2 = create_circle(n);
 
     head = merge(head, head2);
 

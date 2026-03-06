@@ -32,7 +32,7 @@ struct student {
     struct student *next;
 };
 
-struct student *create(int n) {
+struct student *create_circle(int n) {
     struct student *head = NULL, *p1 = NULL, *p2 = NULL;
     int i;
     for (i = 1; i <= n; i++) {
@@ -77,7 +77,7 @@ int main() {
     struct student *head, *stu;
     int n;
     scanf("%d", &n);
-    head = create(n);
+    head = create_circle(n);
     print(head);
     head = reverse(head);
     print(head);

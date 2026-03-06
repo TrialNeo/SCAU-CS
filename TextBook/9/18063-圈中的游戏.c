@@ -21,30 +21,34 @@ struct Node {
     struct Node *next;
 };
 
-struct Node *create(unsigned n) {
-    struct Node *pHead = NULL, *pNew = NULL, *pEnd = NULL;
-    pNew = (struct Node *) malloc(sizeof(struct Node));
-    pEnd = pNew;
-    pNew->ID = 1;
-    pNew->next = NULL;
-    pHead = pNew;
-    for (int i = 2; i <= n; i++) {
-        pNew = (struct Node *) malloc(sizeof(struct Node));
-        pNew->ID = i;
-        pNew->next = NULL;
+typedef struct Node node;
 
-        pEnd->next = pNew;
-        pEnd = pNew;
+struct Node *create_circle(int num) {
+    node *head = NULL,
+            *new = NULL,
+            *current = malloc(sizeof(node));
+    if (num >= 1) {
+        head = current;
+        current->ID = 1;
+        current->next = NULL;
     }
-    return pHead;
+    for (int i = 2; i <= num; i++) {
+        new = malloc(sizeof(node));
+        new->ID = i;
+        new->next = NULL;
+        current->next = new;
+        current = new;
+    }
+    current->next = head;
+    return head;
 }
-
 
 
 int main(int argc, char *argv[]) {
     int n = 0;
     scanf("%d", &n);
-    //Create
-    struct Node *node = NULL;
-    const unsigned len = sizeof(struct Node);
+    node *current = create_circle(n);
+
+    printf("%d", current->ID);
+
 }
