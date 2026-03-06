@@ -37,14 +37,20 @@ void print(struct student *head) {
 }
 
 struct student *insert(struct student *head, struct student *stud) {
-    if (head == NULL)
+    if (head == NULL) {
         return stud;
-    if (stud == NULL || head->next == NULL) {
-        head->next = stud;
-        return head;
+    }
+    if (head->num > stud->num) {
+        stud->next = head;
+        return stud;
     }
 
-
+    struct student *current = head;
+    while (current->next != NULL && current->next->num < stud->num) {
+        current = current->next;
+    }
+    stud->next = current->next;
+    current->next = stud;
     return head;
 }
 

@@ -75,6 +75,14 @@ struct student *del(struct student *head, long num) {
 }
 
 struct student *sort(struct student *head) {
+    struct student *current = NULL, *sorted = NULL;
+    while (head) {
+        current = head;
+        head= head->next;
+        current->next = NULL;
+        sorted = insert(sorted,current);
+    }
+    return sorted;
 }
 
 int main() {
