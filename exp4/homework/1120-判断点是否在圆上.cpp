@@ -16,13 +16,15 @@ Y
 
 #include <cstdio>
 #include <iostream>
+#include <cmath>
 using namespace std;
 #define epsilon 1e-3
+
 
 int main(int argc, char *argv[]) {
     float x, y = 0;
     scanf("%f,%f", &x, &y);
-    if (x * x + y * y - 1 <= epsilon) {
+    if (fabs(x * x + y * y - 1.) <= epsilon) {
         cout << "Y";
     } else {
         cout << "N";
