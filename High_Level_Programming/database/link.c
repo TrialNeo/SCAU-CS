@@ -99,6 +99,7 @@ bool link_insert_with_sort(link L, const int data) {
     node->next = p->next;
     node->data = data;
     p->next = node;
+    return true;
 }
 
 //删除指定index的节点
@@ -115,14 +116,37 @@ bool link_del(link L,int index) {
     if (p!= NULL && p->next != NULL) {
         link temp = p->next;
         p->next = temp->next;
-        printf("%d\n",temp->data);
         free(temp);
+        return true;
     }
     return false;
 }
 
-
-
+//插入排序
+bool link_sort(link *L) {
+    if ((*L)->next == NULL) {
+        //空表默认就是有序的。。
+        return true;
+    }
+    if ((*L)->next->next == NULL) {
+        //只有一个元素的也是不需要排序的，本来就有序
+        return true;
+    }
+    link new = malloc(sizeof(struct link));
+    new->data = 0;
+    new->next = NULL;
+    if (new ==NULL) {
+        return false;
+    }
+    link p = (*L)->next;
+    while (p!=NULL) {
+        link_insert_with_sort(new, p->data);
+        p = p->next;
+    }
+    free(*L);
+    *L = new;
+    return true;
+}
 
 int main(int argc, char *argv[]) {
     unsigned n = 0;
@@ -138,6 +162,9 @@ int main(int argc, char *argv[]) {
     link_print(t);
 
     link_del(t, 5);
+    link_print(t);
+
+    link_sort(&t);
     link_print(t);
 
 
