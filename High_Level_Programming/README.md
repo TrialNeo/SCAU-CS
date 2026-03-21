@@ -8,7 +8,7 @@
 
 个人物品管理程序（英文：Personal Belongings Management，为了方便，以后在项目和其他地方都简称为：PBM）
 
-参照自己以往项目的文件命名规范[[[TrialNeo/Digghper: 后端开发的“毛胚房”，接入gorm+fiber+jwt+redis,实现web后端+scheduled job，“插件式”插拔开发，易拓展](https://github.com/TrialNeo/Digghper)]]README中的项目规范
+参照自己以往项目的文件命名规范[TrialNeo/Digghper: 后端开发的“毛胚房”，接入gorm+fiber+jwt+redis,实现web后端+scheduled job，“插件式”插拔开发，易拓展](https://github.com/TrialNeo/Digghper)README中的项目规范
 
 文件开头需要有创建时间，创建人
 
@@ -75,6 +75,7 @@ gcc version 14.2.0 (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r3
 
 ```cmd
 cmake --build .
+PBM.exe
 ```
 
 
@@ -85,6 +86,8 @@ cmake --build .
 - [CMAKE学习——编译多个文件 & 多个目录_多文件夹编译cmake-CSDN博客](https://blog.csdn.net/dyyzlzc/article/details/105189374)
 - [C语言下的清屏函数_#ifdef to gt checkdensityto fill = density to >0-CSDN博客](https://blog.csdn.net/lopper/article/details/5062960)
 - [什么是TLV格式？TLV编码格式解析：一种灵活可扩展的自定义网络/串口/总线通信协议，数据表示方式在现代计算和通信系统中 - 掘金](https://juejin.cn/post/7499013941126168576)
+- [TrialNeo/Digghper: 后端开发的“毛胚房”，接入gorm+fiber+jwt+redis,实现web后端+scheduled job，“插件式”插拔开发，易拓展](https://github.com/TrialNeo/Digghper)
+- 
 
 
 

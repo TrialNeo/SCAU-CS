@@ -39,3 +39,10 @@ void system_init(){
     system_user_init();
     belong_init();
 }
+
+
+void system_exit() {
+    // 持久化存储
+
+
+}

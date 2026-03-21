@@ -5,19 +5,22 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include "../../../../IDE/CLion/bin/mingw/x86_64-w64-mingw32/include/string.h"
 #include "../database/belong.h"
 #include "../system/system.h"
 #include "menu.h"
-#include <time.h>
 
+unsigned table_name_max_width = 10;
+unsigned table_desc_max_width = 10;
 
-//二次确认
+// 二次确认
 bool interact_comfirm() {
     char op;
     do {
-        printf("请确认[y/n]:");
+        printf("请确认[Y/N]:");
         scanf(" %c", &op);
-    } while (op != 'y' && op != 'Y'&& op != 'n'&& op != 'N');
+    } while (op != 'y' && op != 'Y' && op != 'n' && op != 'N');
     return op == 'y' || op == 'Y';
 }
 
@@ -25,15 +28,20 @@ bool interact_comfirm() {
 // 录入新信息
 void interact_enter() {
     system_cls();
-    belong data ;
-    printf("+============================================\n");
-    printf("+ 您当前正在录入物品\n");
-    printf("+--------------------------------------------\n");
+    belong data;
+    printf("+===============================================+\n");
+    printf("+ 您当前正在录入物品\t\t\t\t+\n");
+    printf("+-----------------------------------------------+\n");
     printf("- 请输入要录入的物品名称:");
     scanf(" %s", data.name);
     printf("- 请输入要录入的物品备注或描述:");
     scanf(" %s", data.desc);
     data.create_stamp = time(NULL);
+    unsigned width = strlen(data.name); // 配置一下表格的宽度
+    table_name_max_width = width > table_name_max_width ? width : table_name_max_width;
+    width = strlen(data.desc); // 配置一下表格的宽度
+    table_desc_max_width = width > table_desc_max_width ? width : table_desc_max_width;
+
     if (interact_comfirm()) {
         belong_add(data);
         system_cls();
@@ -44,12 +52,23 @@ void interact_enter() {
     system("pause");
 }
 
+void interact_modify() {}
+
+void interact_del() {
+    system_cls();
+    printf("请输入要删除的物品ID:");
+    unsigned id = 0;
+    scanf(" %d", &id);
+}
+
+
 void __interact_query(const belong data) {
-    printf("[%s]%s %ld\n", data.name, data.desc, data.create_stamp);
+    printf("%u\t%-*s\t%-*s\t%ld\n", data.id, table_name_max_width, data.name,table_desc_max_width, data.desc, data.create_stamp);
 }
 
 void interact_query() {
     system_cls();
+    printf("+ id\t\t%-*s \t%-*s\t%s\n", table_name_max_width, "物品名称",table_desc_max_width, "描述", "添加时间");
     belong_print(__interact_query);
     system("pause");
 }

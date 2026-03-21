@@ -113,6 +113,14 @@ void belong_print(belong_query_callback callback) {
     }
 }
 
+void belong_save() {
+    link p = belongs->next;
+    while (p != NULL) {
+
+        p = p->next;
+    }
+}
+
 // void a(const belong data) {
 //     printf("%s %s %ld\n",data.name,data.desc,data.create_stamp);
 // }
