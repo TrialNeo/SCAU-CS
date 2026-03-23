@@ -6,12 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "store.h"
 #include "tlv.h"
 
-
 link belongs;
-unsigned size = 0;
+unsigned m_size = 0;
 
 
 link link_init(unsigned num) {
@@ -61,7 +60,7 @@ bool link_insert_with_sort(link L, const belong data) {
     }
     node->next = p->next;
     node->data = malloc(sizeof(belong));
-    node->data->id = size++;
+    node->data->id = m_size++;
     strcpy(node->data->name, data.name);
     strcpy(node->data->desc, data.desc);
     node->data->create_stamp = data.create_stamp;
@@ -91,8 +90,80 @@ bool link_del(link L, int index) {
     return false;
 }
 
+
+//---------------------------------------------------------------------
+
+
+void belong_save() {
+    link p = belongs->next;
+    unsigned char *w_buffer = malloc(5148), *buffer = 0;
+    // 123456
+    unsigned offset = 0, len_written = 0;
+
+    tlv_encode_uint(&buffer, &len_written, m_size);
+    memmove(w_buffer, buffer, len_written);
+    free(buffer);
+    offset += len_written - 1;
+
+    while (p != NULL) {
+
+        tlv_encode_uint(&buffer, &len_written, p->data->id);
+        memmove(w_buffer + offset, buffer, len_written);
+        free(buffer);
+        offset += len_written - 1;
+
+        tlv_encode_uint(&buffer, &len_written, p->data->create_stamp);
+        memmove(w_buffer + offset, buffer, len_written);
+        free(buffer);
+        offset += len_written - 1;
+
+
+        tlv_encode_bytes(&buffer, &len_written, strlen(p->data->name), (unsigned char *) p->data->name);
+        memmove(w_buffer + offset, buffer, len_written);
+        free(buffer);
+        offset += len_written - 1;
+
+        tlv_encode_bytes(&buffer, &len_written, strlen(p->data->desc), (unsigned char *) p->data->desc);
+        memmove(w_buffer + offset, buffer, len_written);
+        offset += len_written - 1;
+        free(buffer);
+
+        p = p->next;
+    }
+    data_rewrite(w_buffer, offset + 1);
+    free(w_buffer);
+}
+
+
 // 初始化
-void belong_init() { belongs = link_init(0); }
+void belong_init() {
+    belongs = link_init(0);
+    bytes buffer = 0;
+    unsigned len = 0, len_read = 0, offset = 0;
+    // 读取持久化配置
+    data_load(&buffer, &len);
+
+    unsigned size = tlv_decode_uint(buffer, &len_read);
+    for (unsigned i = 0; i < size; i++) {
+        belong data;
+        bytes buffer_read = 0;
+        data.id = tlv_decode_uint(buffer, &len_read);
+
+
+        data.create_stamp = tlv_decode_uint(buffer, &len_read);
+
+        tlv_decode_bytes(buffer, &buffer_read, &len_read);
+        memcpy(&data.name,buffer_read,len_read);
+        free(buffer_read);
+
+        tlv_decode_bytes(buffer, &buffer_read, &len_read);
+        memcpy(&data.desc,buffer_read,len_read);
+        free(buffer_read);
+
+        belong_add(data);
+    }
+    free(buffer);
+}
 
 
 // 卸载，释放内存
@@ -109,56 +180,3 @@ void belong_print(belong_query_callback callback) {
         p = p->next;
     }
 }
-
-void belong_save() {
-    link p = belongs->next;
-    char *w_buffer = malloc(5148);
-    // 123456
-    unsigned offset = 0;
-    while (p != NULL) {
-        unsigned char *buffer = 0;
-        unsigned len = 0;
-
-        tlv_encode_uint(&buffer, &len, p->data->id);
-        memmove(w_buffer + offset, buffer, len);
-        free(buffer);
-        offset += len - 1;
-
-        tlv_encode_uint(&buffer, &len, p->data->create_stamp);
-        memmove(w_buffer + offset, buffer, len);
-        free(buffer);
-        offset += len - 1;
-
-
-        tlv_encode_bytes(&buffer, &len, strlen(p->data->name), (unsigned char *) p->data->name);
-        memmove(w_buffer + offset, buffer, len);
-        free(buffer);
-        offset += len - 1;
-
-        tlv_encode_bytes(&buffer, &len, strlen(p->data->desc), (unsigned char *) p->data->desc);
-        memmove(w_buffer + offset, buffer, len);
-        offset += len - 1;
-        free(buffer);
-
-        p = p->next;
-    }
-    FILE *fp = fopen("./data", "wb");
-    fwrite(w_buffer, offset, 1, fp);
-    free(w_buffer);
-}
-
-// void a(const belong data) {
-//     printf("%s %s %ld\n",data.name,data.desc,data.create_stamp);
-// }
-//
-// int main(int argc, char *argv[]) {
-//     belong_init();
-//     belong data ;
-//     strcpy(data.name,"asihdsa");
-//     strcpy(data.desc,"uihshdsai");
-//     data.create_stamp = time(NULL);
-//     belong_add(data);
-//     belong_print(a);
-//
-//     belong_unin();
-// }
