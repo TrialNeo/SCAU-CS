@@ -5,15 +5,16 @@ cmake-build-debug
 CMakeLists.txt
 
 #c
-/c/.clang-tidy
+/online-judge/c/.clang-tidy
 
 # 高级程序设计
-/High_Level_Programming/cmake-build-debug/
-/High_Level_Programming/CMakeFiles/
-/High_Level_Programming/build.ninja
-/High_Level_Programming/Makefile
-/High_Level_Programming/cmake_install.cmake
+/high-level-programming/cmake-build-debug/
+/high-level-programming/CMakeFiles/
+/high-level-programming/build.ninja
+/high-level-programming/Makefile
+/high-level-programming/cmake_install.cmake
 
 # others
 compile_commands.json
 .clang-tidy
+.clang-format
