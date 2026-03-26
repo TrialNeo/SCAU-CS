@@ -1,6 +1,7 @@
 // Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/3/24 11:40.
 
+#include "cos_similar.h"
 #include <iostream>
 #include <map>
 #include <math.h>
@@ -33,7 +34,7 @@ float norm_2_bool(bool vector[], unsigned length) {
     return sqrtf(result);
 }
 
-float cos_similar(string &str1, string &str2) {
+float cos_similar(const std::string &str1, const std::string &str2) {
     map<string, int> vec_m;
     unsigned len_max = getLength(str1) + getLength(str2);
     bool *vec_space_1 = new bool[len_max]();
@@ -99,3 +100,13 @@ float cos_similar(string &str1, string &str2) {
 //         cout << list[i] << " 匹配度：" << r << endl;
 //     }
 // }
+
+extern "C" {
+    float cosine_similarity(const char* str1, const char* str2) {
+        if (str1 == nullptr || str2 == nullptr) {
+            return 0.0f;
+        }
+        // 调用内部的 C++ 逻辑
+        return cos_similar(string(str1), string(str2));
+    }
+}

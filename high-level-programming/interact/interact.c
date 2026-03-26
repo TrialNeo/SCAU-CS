@@ -87,6 +87,34 @@ void interact_query() {
 }
 
 
+void interact_fuzzy_search() {
+    system_cls();
+    system_tip("请输入您要查找的方式");
+    system_tip("1.通过物品ID查找\t2.通过物品名称查找");
+    system_tip("0.返回上一步");
+    system_ask("请输入功能编号");
+    unsigned op = 0;
+    do {
+        scanf("%u", &op);
+
+    } while (op != 0 && op != 1 && op != 2);
+    switch (op) {
+        case 0:
+            system_cls();
+            return;
+        case 1:
+            break;
+        case 2:
+            system_cls();
+            system_ask("请输入你要查找的物品大致名称");
+            char str[255] = {0};
+            scanf(" %s", str);
+            belong_fuzzy_search(str, __interact_query);
+            break;
+    }
+    system_pause();
+}
+
 // 实现用户交互
 void interact() {
     int op = 0;
@@ -100,14 +128,17 @@ void interact() {
                 interact_query();
                 break;
             case 2:
-                interact_enter();
+                interact_fuzzy_search();
                 break;
             case 3:
+                interact_enter();
                 break;
             case 4:
                 interact_del();
                 break;
             case 5:
+                break;
+            case 6:
                 break;
             case 0:
                 belong_save();

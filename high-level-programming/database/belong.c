@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cos_similar.h"
 #include "store.h"
 #include "tlv.h"
 
@@ -194,4 +195,53 @@ void belong_print(belong_query_callback callback) {
         callback(*(p->data));
         p = p->next;
     }
+}
+
+
+// 通过cosine similarity算法进行模糊搜索
+void belong_fuzzy_search(const char *name, belong_query_callback callback) {
+    // 相似度最大值
+    static const float SIMILARITY_THRESHOLD = 0.3;
+
+    typedef struct {
+        belong data;
+        float similarity;
+    } similarity_item;
+
+    link p = belongs->next;
+
+    // 分配内存存储相似度数据
+    similarity_item *items = malloc(sizeof(similarity_item) * m_size);
+    if (items == NULL) {
+        return;
+    }
+
+    // 计算每个物品的相似度
+    int index = 0;
+    while (p != NULL && index < m_size) {
+        items[index].data = *(p->data);
+        items[index].similarity = cosine_similarity(name, p->data->name);
+        index++;
+        p = p->next;
+    }
+
+    // 按照相似度降序排列
+    for (int i = 0; i < m_size - 1; i++) {
+        for (int j = i + 1; j < m_size; j++) {
+            if (items[i].similarity < items[j].similarity) {
+                similarity_item temp = items[i];
+                items[i] = items[j];
+                items[j] = temp;
+            }
+        }
+    }
+
+    // 显示相似度高于阈值的物品
+    for (int i = 0; i < m_size; i++) {
+        if (items[i].similarity >= SIMILARITY_THRESHOLD) {
+            callback(items[i].data);
+        }
+    }
+    // 释放内存
+    free(items);
 }
