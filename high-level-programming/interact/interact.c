@@ -58,16 +58,14 @@ void interact_modify() {}
 // 删除对应id的物品信息
 void interact_del() {
     system_cls();
-    printf("+ 请输入要删除的物品ID:");
+    system_ask("请输入要删除的物品ID");
     unsigned id = 0;
     scanf(" %d", &id);
-
-
     if (interact_comfirm()) {
         system_cls();
-        printf("* 删除成功\n");
+        system_tip("删除成功");
     } else {
-        printf("- 删除操作已取消\n");
+        system_tip("删除操作已取消");
     }
 
     system_pause();
@@ -134,9 +132,9 @@ void interact() {
                 interact_enter();
                 break;
             case 4:
-                interact_del();
                 break;
             case 5:
+                interact_del();
                 break;
             case 6:
                 break;

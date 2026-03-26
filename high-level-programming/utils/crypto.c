@@ -46,9 +46,9 @@ bool encrypt(const char key_buffer[16], const char *paint_text_buffer, const uns
     return true;
 }
 
-void print_buffer(char *buffer, unsigned len) {
+void print_buffer(const unsigned char *buffer,const unsigned len) {
     for (int i = 0; i < len; i++) {
-        printf("%d ", buffer[i]);
+        printf("%02X ", buffer[i]);
     }
     putchar('\n');
 }
@@ -64,7 +64,6 @@ bool decrypt(const char key_buffer[16], char *paint_text_buffer, const unsigned 
     *buffer = (char *) malloc(text_len);
     unsigned offset = 0;
     memcpy(*buffer, paint_text_buffer, text_len);
-    print_buffer(*buffer, text_len);
     for (int i = 0; i < block_num; ++i) {
         for (int j = 0; j < 16; ++j) {
             (*buffer)[offset++] ^= key_buffer[j];
@@ -98,6 +97,7 @@ bool decrypt(const char key_buffer[16], char *paint_text_buffer, const unsigned 
 //     encrypt(key, text, 6, &buffer, &len);
 //     print_buffer(buffer, len);
 //     decrypt(key, buffer, len, &buffer2, &len2);
+//     printf("%d  %d\n",len,len2);
 //     print_buffer(buffer2, len2);
 //     free(buffer);
 //     free(buffer2);

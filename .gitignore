@@ -13,7 +13,7 @@ CMakeLists.txt
 /high-level-programming/build.ninja
 /high-level-programming/Makefile
 /high-level-programming/cmake_install.cmake
-/high-level-programming/.cmake
+/high-level-programming/.cmake/
 /high-level-programming/.ninja_log
 /high-level-programming/.ninja_deps
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../system/system.h"
 #include "../utils/crypto.h"
 
 
@@ -19,11 +20,9 @@ void data_load(bytes *buffer, unsigned *size) {
         fread(paint_text_buffer, len, 1, file);
         // 文件解密
         decrypt(file_crypto_key, (char *) paint_text_buffer, len, (char **) buffer, size);
-
-
+        // print_buffer(*buffer,*size);
         free(paint_text_buffer);
         fclose(file);
-
     }
 }
 
@@ -31,10 +30,7 @@ void data_load(bytes *buffer, unsigned *size) {
 // 记得调用之后释放buffer的内存
 void data_rewrite(const bytes buffer, unsigned size) {
     FILE *fp = fopen("./data", "wb");
-    // for (unsigned i = 0;i<size;i++) {
-    //     printf("%02X ",buffer[i]);
-    // }
-    // putchar('\n');
+    // print_buffer(buffer, size);
     char *_buffer = 0;
     unsigned len = 0;
     if (encrypt(file_crypto_key, buffer, size, &_buffer, &len)) {

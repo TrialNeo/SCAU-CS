@@ -22,6 +22,7 @@ void belong_init();
 void belong_unin();
 void belong_print();
 bool belong_add(const belong data);
+belong *belong_del(const int id, const char *name);
 void belong_save();
 void belong_fuzzy_search(const char *name, belong_query_callback callback);
 #endif // PBM_BELONG_H

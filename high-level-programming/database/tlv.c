@@ -6,6 +6,7 @@
 #include "stdlib.h"
 #include "string.h"
 
+#include "../utils/crypto.h"
 #include "stdio.h"
 
 enum TLV_TYPE { TLV_TYPE_BYTES, TLV_TYPE_UINT };
@@ -31,21 +32,22 @@ void tlv_encode_bytes(bytes *buffer, unsigned *buffer_len, unsigned length, byte
 }
 
 // 解成bytes，记得释放buffer
-void tlv_decode_bytes(const bytes tlv_stream, bytes *buffer, unsigned *len) {
+void tlv_decode_bytes(const bytes tlv_stream, bytes *buffer, unsigned *read_len,unsigned *buffer_len) {
     unsigned char bit_len = tlv_stream[0] >> 4;
     switch (bit_len) {
         case 1:
-            *len = tlv_stream[1];
+            *buffer_len = tlv_stream[1];
             break;
         case 2:
-            *len = (tlv_stream[1] << 8) + tlv_stream[2];
+            *buffer_len = (tlv_stream[1] << 8) + tlv_stream[2];
             break;
         default:
             break;
     }
-    *buffer = malloc(*len);
-    memmove(*buffer, tlv_stream + 1 + bit_len, *len);
-    *len += bit_len + 1;
+    *buffer = malloc(*buffer_len);
+    memmove(*buffer, tlv_stream + 1 + bit_len, *buffer_len);
+    *read_len =*buffer_len + bit_len + 1;
+
 }
 
 // 记得释放buffer
@@ -76,14 +78,28 @@ unsigned long long tlv_decode_uint(const bytes tlv_stream, unsigned *len) {
     return result;
 }
 
-
-// int main(int argc, char *argv[]) {
-//     unsigned char *buffer = 0;
-//     unsigned len = 0;
-//     tlv_encode_uint(&buffer, &len, 1); // 0b1 1111 1111
+// void print_buffer(const unsigned char *buffer, const unsigned len) {
 //     for (int i = 0; i < len; i++) {
 //         printf("%02X ", buffer[i]);
 //     }
-//     printf("\n");
-//     printf("%llu\n", tlv_decode_uint(buffer,&len));
+//     putchar('\n');
+// }
+// int main(int argc, char *argv[]) {
+//     unsigned char buffer[5] = {16,3,1, 2, 3};
+//     unsigned len = 5;
+//     // tlv_encode_uint(&buffer, &len, 123); // 0b1 1111 1111
+//     // for (int i = 0; i < len; i++) {
+//     //     printf("%02X ", buffer[i]);
+//     // }
+//     // printf("\n");
+//     // printf("%llu   %d\n", tlv_decode_uint(buffer, &len), len);
+//
+//     unsigned char *buffer2 = 0;
+//     unsigned len2 = 0,len3 = 0;
+//     tlv_decode_bytes(buffer,&buffer2,&len2,&len3);
+//     print_buffer(buffer2, len3);
+//
+//     printf("%d", len3);
+//     free(buffer2);
+//
 // }
