@@ -58,16 +58,36 @@ void interact_modify() {}
 // 删除对应id的物品信息
 void interact_del() {
     system_cls();
-    system_ask("请输入要删除的物品ID");
+    system_tip("1.通过ID删除\t2.通过完整名称删除");
+
+    system_ask("请选择您的操作序号");
     unsigned id = 0;
-    scanf(" %d", &id);
+    char str[255] = {0};
+    switch (system_get_op_id()) {
+        case 1:
+            system_ask("请输入要删除的物品ID");
+            scanf(" %d", &id);
+            break;
+        case 2:
+            system_ask("请输入要删除的物品名称");
+            scanf(" %s", str);
+            break;
+        default:
+            break;
+    }
     if (interact_comfirm()) {
         system_cls();
-        system_tip("删除成功");
+        belong b = {0};
+        if (belong_del(id, str, &b)) {
+            char s[255]  = {0};
+            sprintf(s,"物品[%s]已被删除",b.name);
+            system_tip(s);
+        } else {
+            system_tip("删除失败!请检查输入信息是否正确~");
+        }
     } else {
         system_tip("删除操作已取消");
     }
-
     system_pause();
 }
 
@@ -89,6 +109,7 @@ void interact_fuzzy_search() {
     system_cls();
     system_tip("请输入您要查找的方式");
     system_tip("1.通过物品ID查找\t2.通过物品名称查找");
+    system_split();
     system_tip("0.返回上一步");
     system_ask("请输入功能编号");
     unsigned op = 0;

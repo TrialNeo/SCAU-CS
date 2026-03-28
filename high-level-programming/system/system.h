@@ -8,4 +8,6 @@ void system_cls();
 void system_pause();
 void system_tip(const char * msg);
 void system_ask(const char * msg);
+void system_split();
+unsigned system_get_op_id();
 #endif // PBM_SYSTEM_H

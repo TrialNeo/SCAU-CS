@@ -16,6 +16,11 @@ void system_pause() {
     system("pause");
 }
 
+//分割线
+void system_split() {
+    puts("+--------------------------------------------");
+}
+
 //询问
 void system_ask(const char * msg) {
     printf("+ %s:",msg);
@@ -24,6 +29,14 @@ void system_ask(const char * msg) {
 //系统提示
 void system_tip(const char * msg) {
     printf("- %s\n",msg);
+}
+
+
+//获取操作id
+unsigned system_get_op_id() {
+    unsigned op = 0;
+    scanf(" %u",&op);
+    return op;
 }
 
 
