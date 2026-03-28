@@ -29,9 +29,9 @@ bool interact_comfirm() {
 void interact_enter() {
     system_cls();
     belong data;
-    printf("+===============================================+\n");
+    system_fun_start();
     printf("+ 您当前正在录入物品\t\t\t\t+\n");
-    printf("+-----------------------------------------------+\n");
+    system_split();
     printf("- 请输入要录入的物品名称:");
     scanf(" %s", data.name);
     printf("- 请输入要录入的物品备注或描述:");
@@ -41,7 +41,6 @@ void interact_enter() {
     table_name_max_width = width > table_name_max_width ? width : table_name_max_width;
     width = strlen(data.desc); // 配置一下表格的宽度
     table_desc_max_width = width > table_desc_max_width ? width : table_desc_max_width;
-
     if (interact_comfirm()) {
         belong_add(data);
         system_cls();
@@ -52,18 +51,42 @@ void interact_enter() {
     system_pause();
 }
 
-void interact_modify() {}
+void interact_modify() {
+    system_cls();
+    system_fun_start();
+    system_ask("请输入需要删除的物品ID[输入0可返回上一步]");
+
+    unsigned id = 0;
+    scanf(" %u", &id);
+    if (id == 0) {
+        return;
+    }
+
+    system_cls();
+    char name[255] = {0}, desc[255] = {0};
+    system_ask("请输入新的名称，若不修改可空");
+    system_get_line(name);
+    system_ask("请输入新的备注，若不修改可空");
+    system_get_line(desc);
+    if (belong_modify(id, strlen(name) ? name : NULL, strlen(desc) ? desc : NULL)) {
+        system_tip("修改成功");
+    } else {
+        system_tip("修改失败，请检查ID是否正确");
+    }
+    system_pause();
+}
 
 
 // 删除对应id的物品信息
 void interact_del() {
     system_cls();
+    system_fun_start();
     system_tip("1.通过ID删除\t2.通过完整名称删除");
     system_split();
     system_ask("请选择您的操作序号");
     unsigned id = 0;
     char str[255] = {0};
-    switch (system_get_op_id(0,2)) {
+    switch (system_get_op_id(0, 2)) {
         case 1:
             system_ask("请输入要删除的物品ID");
             scanf(" %d", &id);
@@ -113,7 +136,7 @@ void interact_fuzzy_search() {
     system_tip("0.返回上一步");
     system_ask("请输入功能编号");
     unsigned op = 0;
-    op = system_get_op_id(0,2);
+    op = system_get_op_id(0, 2);
     switch (op) {
         case 0:
             system_cls();
@@ -138,7 +161,7 @@ void interact() {
         system_cls();
         menu_welcome();
         printf("请输入您的功能编号:");
-        op = system_get_op_id(0,6);
+        op = system_get_op_id(0, 6);
         switch (op) {
             case 1:
                 interact_query();
@@ -150,6 +173,7 @@ void interact() {
                 interact_enter();
                 break;
             case 4:
+                interact_modify();
                 break;
             case 5:
                 interact_del();

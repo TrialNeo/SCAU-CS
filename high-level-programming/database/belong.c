@@ -6,8 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../system/system.h"
-#include "../utils/crypto.h"
 #include "cos_similar.h"
 #include "store.h"
 #include "tlv.h"
@@ -270,4 +268,27 @@ void belong_fuzzy_search(const char *name, belong_query_callback callback) {
     }
     // 释放内存
     free(items);
+}
+
+// 进行修改
+bool belong_modify(unsigned id, const char *name, const char *desc) {
+    if (id == 0) {
+        return false;
+    }
+    link p = belongs->next;
+    // 先进性查找
+    while (p != NULL) {
+        if (p->data->id == id) {
+            // 将非空的进行修改
+            if (name != NULL) {
+                strcpy(p->data->name, name);
+            }
+            if (desc != NULL) {
+                strcpy(p->data->desc, desc);
+            }
+            return true;
+        }
+        p = p->next;
+    }
+    return false;
 }

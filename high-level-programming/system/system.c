@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #include "../admin/login.h"
 #include "../database/belong.h"
 
@@ -14,6 +14,18 @@ void system_cls() { system("cls"); }
 
 // 等待确认
 void system_pause() { system("pause"); }
+
+
+char *system_get_line(char *buf) {
+    if (fgets(buf, sizeof(*buf), stdin)) {
+        buf[strcspn(buf, "\n")] = '\0';
+        return buf;
+    }
+    return NULL;
+}
+
+// 功能开始的提示线
+void system_fun_start() { puts("+===============================================+"); }
 
 // 分割线
 void system_split() { puts("+--------------------------------------------"); }
@@ -30,13 +42,13 @@ unsigned system_get_op_id(unsigned min, unsigned max) {
     unsigned op = 0;
     char ch = 0;
     while (true) {
-        while ((ch = getchar()) != EOF && isspace(ch)){}
+        while ((ch = getchar()) != EOF && isspace(ch)) {
+        }
         op = ch - '0';
-        if  (min <=  op && op <= max) {
+        if (min <= op && op <= max) {
             return op;
         }
     }
-
 
     scanf(" %u", &op);
     return op;
