@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../admin/login.h"
+#include <sys/stat.h>
+#include "../admin/users.h"
 #include "../database/belong.h"
 
 // 清屏
@@ -79,6 +80,10 @@ void system_user_init() {
 
 // 系统初始化，用于读取配置，数据相关
 void system_init() {
+    //注册特定的文件目录
+    mkdir("./data");
+    mkdir("./data/user");
+
     system_user_init(); // 加载用户配置
     belong_init(); // 加载个人物品的配置
 }

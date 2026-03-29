@@ -4,6 +4,7 @@
 #ifndef PBM_ADMIN
 #define PBM_ADMIN
 #include <stdbool.h>
+#include "../utils/crypto.h"
 enum LOGIN_STATUS {
     SUCCESS,
     PASSWORD_INCORRECT,
