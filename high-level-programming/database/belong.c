@@ -6,13 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../system/system.h"
+#include "../utils/crypto.h"
 #include "cos_similar.h"
 #include "store.h"
 #include "tlv.h"
 
 link belongs;
 unsigned m_size = 0;
-
 
 link link_init(unsigned num) {
     // 头结点
@@ -221,13 +222,13 @@ void belong_print(belong_query_callback callback) {
 
 
 // 通过cosine similarity算法进行模糊搜索
-void belong_fuzzy_search(const char *name, belong_query_callback callback) {
+bool belong_fuzzy_search(const char *name, belong_query_callback callback) {
     if (m_size == 0) {
-        return;
+        return false;
     }
     // 相似度最大值
     static const float SIMILARITY_THRESHOLD = 0.3;
-
+    bool is_found = false;
     typedef struct {
         belong data;
         float similarity;
@@ -238,7 +239,7 @@ void belong_fuzzy_search(const char *name, belong_query_callback callback) {
     // 分配内存存储相似度数据
     similarity_item *items = malloc(sizeof(similarity_item) * m_size);
     if (items == NULL) {
-        return;
+        return false;
     }
 
     // 计算每个物品的相似度
@@ -264,12 +265,38 @@ void belong_fuzzy_search(const char *name, belong_query_callback callback) {
     // 显示相似度高于阈值的物品
     for (int i = 0; i < m_size; i++) {
         if (items[i].similarity >= SIMILARITY_THRESHOLD) {
+            is_found = true;
             callback(items[i].data);
         }
     }
     // 释放内存
     free(items);
+    return is_found;
 }
+
+
+//通过编号进行查找
+bool belong_id_search(unsigned id, belong_query_callback callback) {
+    if (m_size == 0) {
+        return false;
+    }
+    link p= belongs->next;
+    while (p!= NULL) {
+        if (p->data->id == id) {
+            belong *data = malloc(sizeof(belong));
+            data->id = id;
+            data->create_stamp = p->data->create_stamp;
+            strcpy(data->desc,p->data->desc);
+            strcpy(data->name,p->data->name);
+            callback(*data);
+            free(data);
+            return true;
+        }
+        p = p->next;
+    }
+    return false;
+}
+
 
 // 进行修改
 bool belong_modify(unsigned id, const char *name, const char *desc) {

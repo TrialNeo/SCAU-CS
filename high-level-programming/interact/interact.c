@@ -116,8 +116,15 @@ void interact_del() {
 
 
 void __interact_query(const belong data) {
-    printf("%u\t%-*s\t%-*s\t%ld\n", data.id, table_name_max_width, data.name, table_desc_max_width, data.desc,
-           data.create_stamp);
+    //时间戳转为时间
+    time_t timestamp = data.create_stamp;
+    struct tm *tm_info;
+    tm_info = localtime(&timestamp);
+    tm_info->tm_year+=1900;//这个不知道为什么要这么设计，大概是和千年虫差不多
+
+    printf("%u\t%-*s\t%-*s\t%4d-%02d-%02d %02d:%02d:%02d\n", data.id, table_name_max_width, data.name, table_desc_max_width, data.desc,
+    tm_info->tm_year,tm_info->tm_mon,tm_info->tm_mday,tm_info->tm_hour,tm_info->tm_min,tm_info->tm_sec
+    );
 }
 
 void interact_query() {
@@ -145,6 +152,15 @@ void interact_fuzzy_search() {
             system_cls();
             return;
         case 1:
+            system_ask("请输入你要查找的物品id");
+            char id =0;
+            scanf(" %d", &id);
+            system_split();
+            if (!belong_id_search(id,__interact_query)) {
+                system_tip("抱歉没有查询到任何物品信息，请检查id是否正确");
+                return;
+            }
+
             break;
         case 2:
             system_cls();
@@ -152,8 +168,11 @@ void interact_fuzzy_search() {
             system_ask("请输入你要查找的物品大致名称");
             char str[255] = {0};
             scanf(" %s", str);
-            system_split();
-            belong_fuzzy_search(str, __interact_query);
+            system_cls();
+            system_fun_start();
+            if (!belong_fuzzy_search(str, __interact_query)) {
+                system_tip("抱歉没有查询到任何物品，请检查物品信息是否正确");
+            }
             break;
     }
     system_pause();

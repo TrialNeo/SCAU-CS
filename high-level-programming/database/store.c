@@ -23,6 +23,7 @@ void data_load(bytes *buffer, unsigned *size) {
         // 文件解密
         decrypt(file_crypto_key, (char *) paint_text_buffer, len, (char **) buffer, size);
         // print_buffer(*buffer,*size);
+        // system_pause();
         free(paint_text_buffer);
         fclose(file);
     }
