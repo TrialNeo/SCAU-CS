@@ -130,10 +130,13 @@ void interact_query() {
 
 void interact_fuzzy_search() {
     system_cls();
+    system_fun_start();
     system_tip("请输入您要查找的方式");
+    system_split();
     system_tip("1.通过物品ID查找\t2.通过物品名称查找");
     system_split();
     system_tip("0.返回上一步");
+    system_split();
     system_ask("请输入功能编号");
     unsigned op = 0;
     op = system_get_op_id(0, 2);
@@ -145,9 +148,11 @@ void interact_fuzzy_search() {
             break;
         case 2:
             system_cls();
+            system_fun_start();
             system_ask("请输入你要查找的物品大致名称");
             char str[255] = {0};
             scanf(" %s", str);
+            system_split();
             belong_fuzzy_search(str, __interact_query);
             break;
     }

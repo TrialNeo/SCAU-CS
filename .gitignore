@@ -16,6 +16,8 @@ CMakeLists.txt
 /high-level-programming/.cmake/
 /high-level-programming/.ninja_log
 /high-level-programming/.ninja_deps
+/high-level-programming/Testing
+/high-level-programming/data
 
 # others
 compile_commands.json

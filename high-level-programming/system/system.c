@@ -30,7 +30,7 @@ char *system_get_line(char *buf) {
 void system_fun_start() { puts("+===============================================+"); }
 
 // 分割线
-void system_split() { puts("+--------------------------------------------"); }
+void system_split() { puts("+-----------------------------------------------+"); }
 
 // 询问
 void system_ask(const char *msg) { printf("+ %s:", msg); }
