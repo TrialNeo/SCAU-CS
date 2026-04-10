@@ -30,10 +30,43 @@ void data_load(bytes *buffer, unsigned *size) {
 }
 
 
+
+void data_load_category(bytes *buffer_category, unsigned *size_category) {
+    char file_path[1024];
+    snprintf(file_path, sizeof(file_path), "./data/belongs/%s_category", global_user->username);
+    FILE *file = fopen(file_path, "rb");
+    if (file != NULL) {
+        fseek(file, 0, SEEK_END);
+        unsigned len = ftell(file);
+        rewind(file);
+        bytes paint_text_buffer = malloc(len);
+        fread(paint_text_buffer, len, 1, file);
+        // 文件解密
+        decrypt(file_crypto_key, (char *) paint_text_buffer, len, (char **) buffer_category, size_category);
+        free(paint_text_buffer);
+        fclose(file);
+    }
+}
+
 // 记得调用之后释放buffer的内存
-void data_rewrite(const bytes buffer, unsigned size) {
+void data_rewrite_belongs(const bytes buffer, unsigned size) {
     char file_path[1024];
     snprintf(file_path, sizeof(file_path), "./data/belongs/%s", global_user->username);
+    FILE *fp = fopen(file_path, "wb+");
+    // print_buffer(buffer, size);
+    char *_buffer = 0;
+    unsigned len = 0;
+    if (encrypt(file_crypto_key, buffer, size, &_buffer, &len)) {
+        fwrite(_buffer, len, 1, fp);
+        fclose(fp);
+        free(_buffer);
+    }
+}
+
+// 记得调用之后释放buffer的内存
+void data_rewrite_category(const bytes buffer, unsigned size) {
+    char file_path[1024];
+    snprintf(file_path, sizeof(file_path), "./data/belongs/%s_category", global_user->username);
     FILE *fp = fopen(file_path, "wb+");
     // print_buffer(buffer, size);
     char *_buffer = 0;

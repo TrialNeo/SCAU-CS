@@ -11,13 +11,14 @@
 const char crypto_key[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 user global_user;
 
-bool user_regist(user admin, const char *new_username, const char *new_password, char *error) {
+bool user_regist(user admin, user user_new, char *error) {
     if (admin->role != ROLE_ADMIN) {
         strcpy(error, "权限不足");
         return false;
     }
+    // 写入密码
     char file_path[1024];
-    snprintf(file_path, sizeof(file_path), "./data/users/%s", new_username);
+    snprintf(file_path, sizeof(file_path), "./data/users/%s", user_new->username);
     FILE *fp = fopen(file_path, "rb");
     if (fp != NULL) {
         fclose(fp);
@@ -27,7 +28,7 @@ bool user_regist(user admin, const char *new_username, const char *new_password,
     fclose(fp);
     char *buffer = NULL;
     unsigned buffer_len = 0;
-    if (!encrypt(crypto_key, new_password, strlen(new_password), &buffer, &buffer_len)) {
+    if (!encrypt(crypto_key, user_new->password, strlen(user_new->password), &buffer, &buffer_len)) {
         strcpy(error, "密码加密失败");
         return false;
     }
@@ -35,6 +36,12 @@ bool user_regist(user admin, const char *new_username, const char *new_password,
     fwrite(buffer, 1, buffer_len, fp);
     fclose(fp);
     free(buffer);
+
+    // 写入ROLE，这个不加密
+    snprintf(file_path, sizeof(file_path), "./data/users/%s.ROLE", user_new->username);
+    fp = fopen(file_path, "wb");
+    fprintf(fp, "%d", user_new->role);
+    fclose(fp);
     return true;
 }
 
@@ -65,7 +72,7 @@ bool user_login(user user, char *error) {
         strcpy(error, "密码错误");
         return false;
     }
-    char *tmp = (char *) malloc(len2);
+    char *tmp = malloc(len2);
     fread(tmp, 1, len2, file);
     bool login_status = true;
     for (int i = 0; i < (int) len; i++) {
@@ -78,6 +85,11 @@ bool user_login(user user, char *error) {
     free(tmp);
     fclose(file);
     if (login_status) {
+        snprintf(file_path, sizeof(file_path), "./data/users/%s.ROLE", user->username);
+        FILE *fp = fopen(file_path, "rb");
+        // fread(&user->role, 1, 1, fp);
+        fscanf(fp, "%d", &user->role);
+        fclose(fp);
         return true;
     }
     strcpy(error, "密码错误");

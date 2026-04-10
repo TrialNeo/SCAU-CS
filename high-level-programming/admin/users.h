@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 // 职责
-typedef enum ROLE { ROLE_ADMIN, ROLE_USER } ROLE;
+typedef enum ROLE { ROLE_USER, ROLE_ADMIN } ROLE;
 struct _user {
     char username[255];
     char password[255];
@@ -16,6 +16,6 @@ typedef struct _user *user;
 extern user global_user;
 
 bool user_is_nil();
-bool user_regist(user admin, const char *new_username, const char *new_password, char *error);
+bool user_regist(user admin, user user_new, char *error);
 bool user_login(user user, char *error);
 #endif // PBM_ADMIN
