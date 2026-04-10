@@ -18,6 +18,8 @@ CMakeLists.txt
 /high-level-programming/.ninja_deps
 /high-level-programming/Testing
 /high-level-programming/data
+/high-level-programming/Handbook of applied cryptography (Alfred Menezes, Paul van Oorschot etc.).pdf
+
 
 # others
 compile_commands.json

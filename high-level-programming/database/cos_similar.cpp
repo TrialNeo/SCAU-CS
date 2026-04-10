@@ -1,7 +1,7 @@
 // Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/3/24 11:40.
 
-#include "cos_similar.h"
+#include "../database/cos_similar.h"
 #include <iostream>
 #include <map>
 #include <math.h>

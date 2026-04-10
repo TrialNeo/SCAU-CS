@@ -3,16 +3,17 @@
 
 #include "belong.h"
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../system/system.h"
+#include "category.h"
 #include "cos_similar.h"
 #include "store.h"
 #include "tlv.h"
 
 link belongs;
 unsigned m_size = 0;
-
 
 link link_init(unsigned num) {
     // 头结点
@@ -65,6 +66,7 @@ bool link_insert_with_sort(link L, const belong data) {
     strcpy(node->data->name, data.name);
     strcpy(node->data->desc, data.desc);
     node->data->create_stamp = data.create_stamp;
+    node->data->category = data.category;
     p->next = node;
     return true;
 }
@@ -97,7 +99,7 @@ bool link_del(link L, int index) {
 
 void belong_save() {
     link p = belongs->next;
-    unsigned char *w_buffer = malloc(5148), *buffer = 0;
+    unsigned char *w_buffer = malloc(1024*10), *buffer = 0;
     // 123456
     unsigned offset = 0, len_written = 0;
 
@@ -117,6 +119,10 @@ void belong_save() {
         free(buffer);
         offset += len_written;
 
+        tlv_encode_uint(&buffer, &len_written, p->data->category);
+        memmove(w_buffer + offset, buffer, len_written);
+        free(buffer);
+        offset += len_written;
 
         tlv_encode_bytes(&buffer, &len_written, strlen(p->data->name), (unsigned char *) p->data->name);
         memmove(w_buffer + offset, buffer, len_written);
@@ -132,19 +138,21 @@ void belong_save() {
         p = p->next;
     }
 
-    data_rewrite(w_buffer, offset);
+    data_rewrite_belongs(w_buffer, offset);
     free(w_buffer);
 }
 
 
 // 初始化
 void belong_init() {
+    // system_tip("init");
 
     belongs = link_init(0);
     bytes buffer = 0;
     unsigned block_size = 0, len_read = 0, buffer_len = 0, offset = 0;
     // 读取持久化配置
     data_load(&buffer, &block_size);
+    // system_tip("load data");
     if (block_size == 0) {
         return;
     }
@@ -152,6 +160,7 @@ void belong_init() {
     unsigned size = tlv_decode_uint(buffer, &len_read);
     bytes buffer_read = 0;
     offset += len_read;
+    system_tip("load size");
 
 
     for (unsigned i = 0; i < size; i++) {
@@ -162,6 +171,10 @@ void belong_init() {
 
         data.create_stamp = tlv_decode_uint(buffer + offset, &len_read);
         offset += len_read;
+
+        data.category = tlv_decode_uint(buffer + offset, &len_read);
+        offset += len_read;
+        // system_tip("load category");
 
         tlv_decode_bytes(buffer + offset, &buffer_read, &len_read, &buffer_len);
         memcpy(data.name, buffer_read, buffer_len);
@@ -176,6 +189,8 @@ void belong_init() {
         offset += len_read;
 
         belong_add(data);
+        // system_tip("add data");
+
     }
     free(buffer);
 }
@@ -185,7 +200,14 @@ void belong_init() {
 void belong_unin() { link_free(belongs); }
 
 // 录入新的物品
-bool belong_add(const belong data) { return link_insert_with_sort(belongs, data); }
+bool belong_add(const belong data) {
+    //找一下是不是真的有这个分类
+    if (!category_find(data.category)) {
+        return false;
+    }
+    return link_insert_with_sort(belongs, data);
+}
+
 
 // 根据指定的名称或者id删除物品信息，删除成功后返回删除了的物品信息
 bool belong_del(const unsigned id, const char *name, belong *deled) {
@@ -205,6 +227,7 @@ bool belong_del(const unsigned id, const char *name, belong *deled) {
             m_size--;
             return true;
         }
+        p = p->next;
     }
     return false;
 }
@@ -221,13 +244,13 @@ void belong_print(belong_query_callback callback) {
 
 
 // 通过cosine similarity算法进行模糊搜索
-void belong_fuzzy_search(const char *name, belong_query_callback callback) {
+bool belong_fuzzy_search(const char *name, belong_query_callback callback) {
     if (m_size == 0) {
-        return;
+        return false;
     }
     // 相似度最大值
     static const float SIMILARITY_THRESHOLD = 0.3;
-
+    bool is_found = false;
     typedef struct {
         belong data;
         float similarity;
@@ -238,7 +261,7 @@ void belong_fuzzy_search(const char *name, belong_query_callback callback) {
     // 分配内存存储相似度数据
     similarity_item *items = malloc(sizeof(similarity_item) * m_size);
     if (items == NULL) {
-        return;
+        return false;
     }
 
     // 计算每个物品的相似度
@@ -264,12 +287,75 @@ void belong_fuzzy_search(const char *name, belong_query_callback callback) {
     // 显示相似度高于阈值的物品
     for (int i = 0; i < m_size; i++) {
         if (items[i].similarity >= SIMILARITY_THRESHOLD) {
+            is_found = true;
             callback(items[i].data);
         }
     }
     // 释放内存
     free(items);
+    return is_found;
 }
+
+
+//按照分类进行查找
+bool belong_category_search(const int category_id, belong_query_callback callback) {
+    if (m_size == 0) {
+        return false;
+    }
+    link p  = belongs->next;
+    while (p != NULL) {
+        if (p->data->category == category_id) {
+            belong *data = malloc(sizeof(belong));
+            data->id = p->data->id;
+            data->create_stamp = p->data->create_stamp;
+            strcpy(data->desc,p->data->desc);
+            strcpy(data->name,p->data->name);
+            data->category = p->data->category;
+            callback(*data);
+            free(data);
+        }
+        p = p->next;
+    }
+    return true;
+}
+
+// 删除删除删除分类下的所有东西
+void belong_del_by_category(const int category_id) {
+    link p = belongs, nxt;
+    while ((nxt = p->next) != NULL) {
+        if (nxt->data->category == category_id) {
+            p->next = nxt->next;
+            free(nxt->data);
+            free(nxt);
+            m_size--;
+            continue;
+        }
+        p = p->next;
+    }
+}
+
+//通过编号进行查找
+bool belong_id_search(unsigned id, belong_query_callback callback) {
+    if (m_size == 0) {
+        return false;
+    }
+    link p= belongs->next;
+    while (p!= NULL) {
+        if (p->data->id == id) {
+            belong *data = malloc(sizeof(belong));
+            data->id = id;
+            data->create_stamp = p->data->create_stamp;
+            strcpy(data->desc,p->data->desc);
+            strcpy(data->name,p->data->name);
+            callback(*data);
+            free(data);
+            return true;
+        }
+        p = p->next;
+    }
+    return false;
+}
+
 
 // 进行修改
 bool belong_modify(unsigned id, const char *name, const char *desc) {
@@ -292,4 +378,16 @@ bool belong_modify(unsigned id, const char *name, const char *desc) {
         p = p->next;
     }
     return false;
+}
+
+
+// 按照一定格式打印物品，顺序为%s%s%d=>name desc time
+void belong_print_date(time_t time,belong_query_callback callback) {
+    link p = belongs->next;
+    while (p != NULL) {
+        if (time - p->data->create_stamp <= 7884000 ) {//三个月拿计算器算一下是这么大的秒
+            callback(*(p->data));
+        }
+        p = p->next;
+    }
 }
