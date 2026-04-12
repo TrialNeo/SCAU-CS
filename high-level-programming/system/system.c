@@ -54,7 +54,7 @@ void system_user_init() {
     system_cls();
     system_fun_start();
     if (user_is_nil()) {
-        user new_user = malloc(sizeof(user));
+        user new_user = malloc(sizeof(struct _user));
         char temp[255] = {0};
         system_split();
         system_tip("由于您是初次使用本程序，请先创建一个管理员账号");
@@ -62,14 +62,14 @@ void system_user_init() {
         scanf(" %s", new_user->username);
         system_ask("请输入密码");
         scanf(" %s", new_user->password);
-        user non_admin;
+        user non_admin = calloc(1, sizeof(struct _user));
         non_admin->role = ROLE_ADMIN;
         new_user->role = ROLE_ADMIN;
         char error[255] = {0};
         if (!user_regist(non_admin, new_user, error)) {
             system_tip(error);
         } else {
-            global_user = malloc(sizeof(user));
+            global_user = malloc(sizeof(struct _user));
             global_user->role = ROLE_ADMIN; // 账号密码其实不重要
             system_tip("创建成功");
         }
