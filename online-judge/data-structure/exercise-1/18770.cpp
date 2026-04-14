@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -11,23 +12,16 @@ int main(int argc, char const *argv[]) {
     // 直接相邻的比较就行了hh
     int n = 0;
     cin >> n;
-    int y = 0, x = 0;
-    vector<int> array;
 
-    for (size_t i = 0; i < n; i++) {
-        int tmp = 0;
-        cin >> tmp;
-        array.push_back(tmp);
+    int min_y = 0, curr = 0, max_diff = 0;
+    cin >> min_y;
+    for (size_t i = 1; i < n; i++) {
+        cin >> curr;
+        max_diff = max(max_diff, curr - min_y);
+        min_y = min(min_y, curr);
     }
 
-
-    for (size_t i = 0; i < n - 1; i++) {
-            
-
-
-    }
-
-
+    cout << max_diff << endl;
     return 0;
 }
 

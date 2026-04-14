@@ -36,13 +36,29 @@ c->1->b
 
 #include <iostream>
 using namespace std;
-#include <stack>
-#include <vector>
+#include <cstdio>
+
+void hanoi(int n, string from, string to, string mid) {
+    if (n == 1) {
+        cout << from << "->" << 1 << "->" << to << '\n';
+        return;
+    }
+    hanoi(n - 1, from, mid, to);
+    cout << from << "->" << n << "->" << to << "\n";
+    hanoi(n - 1, mid, from, to);
+}
 
 int main(int argc, char const *argv[]) {
     ios::sync_with_stdio(false);
-    // 往两边移动，原来的不能大于要移动过去的，如果两边不行那么只能动两边，而且不能反向操作
-
+    cin.tie(nullptr);
+    string a, b, c;
+    int n;
+    if (cin >> n >> a >> b >> c) {
+        hanoi(n, a, b, c);
+    };
 
     return 0;
 }
+
+// 第一步 这个主要是要看成一个整体 比如有3个吧 3 (2 1) 先把 (2 1)搬到辅助的 然后就能把3搬到目标的盘子里面去了
+// 那么现在就是剩下 2 1 在辅助盘里面 我们要把他搬到 目标盘子里 重复第一步的操作

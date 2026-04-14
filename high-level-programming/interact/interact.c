@@ -133,20 +133,17 @@ void __interact_query(const belong data) {
     tm_info->tm_year += 1900; // 这个不知道为什么要这么设计，大概是和千年虫差不多
     tm_info->tm_mon++;
 
-    printf("%u\t%-*s\t%-*s\t%4d-%02d-%02d %02d:%02d:%02d\t%u\n",
-           data.id,
-           table_name_max_width*2, data.name,
-           table_desc_max_width*2, data.desc,
-           tm_info->tm_year, tm_info->tm_mon, tm_info->tm_mday,
-           tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec,
+    printf("%u\t%-*s\t%-*s\t%4d-%02d-%02d %02d:%02d:%02d\t%u\n", data.id, table_name_max_width * 2, data.name,
+           table_desc_max_width * 2, data.desc, tm_info->tm_year, tm_info->tm_mon, tm_info->tm_mday, tm_info->tm_hour,
+           tm_info->tm_min, tm_info->tm_sec,
            data.category); // 最后加上分类 ID
 }
 
 void interact_query() {
     system_cls();
     system_fun_start();
-    printf("+ id\t%-*s\t\t%-*s\t\t%s\t%s\n", table_name_max_width, "物品名称", table_desc_max_width, "描述", "添加时间",
-           "分类");
+    printf("+ id\t%-*s\t\t%-*s\t\t%s\t\t%s\n", table_name_max_width, "物品名称", table_desc_max_width, "描述",
+           "添加时间", "分类");
     belong_print(__interact_query);
     system_pause();
 }
