@@ -27,7 +27,7 @@ public:
     vector<int> traversal_in_s(); // 基于栈的中序遍历
     vector<int> traversal_post_s(); // 基于栈的后序遍历
     // -------------------------华丽的分割线-------------------------------------
-
+    bool insert(int key);
     bool search(int key);
     bool del(int key);
     // -------------------------随便的分割线-------------------------------------
@@ -46,7 +46,6 @@ private:
     AVLNode rotate_right_left(const AVLNode &broken);
 
     void re_BF(AVLNode &node);
-    bool insert(int key);
 };
 
 #endif

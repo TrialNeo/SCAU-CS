@@ -21,15 +21,25 @@ void InitHashTable(HashTable *H) { /* 操作结果: 构造一个长度为length�
     for (i = 0; i < length; i++)
         (*H).elem[i] = NULLKEY; /* 未填记录的标志 */
 }
-unsigned Hash(ElemType K) { /* 一个简单的哈希函数*/ }
+
+
+unsigned Hash(ElemType K) {
+    /* 一个简单的哈希函数*/
+    return (3 * K) % length;
+}
 /*线性探测再散列 */
-void collision(int *p) { /* 开放定址法处理冲突 */ }
+void collision(int *p) {
+    /* 开放定址法处理冲突 */
+    *p = ++(*p) % length;
+}
+
 int SearchHash(HashTable H, ElemType K, int *p, int *c) {
     /* 在开放定址哈希表H中查找关键码为K的元素,若查找成功,以p指示待查数据 */
     /* 元素在表中位置,并返回SUCCESS;否则,以p指示插入位置,并返回UNSUCCESS */
     /* c用以计冲突次数，其初值置零，供建表插入时参考。算法9.17 */
     *p = Hash(K); /* 求得哈希地址 */
-    while (H.elem[*p] != NULLKEY && !EQ(K, H.elem[*p])) { /* 该位置中填有记录,并且关键字不相等 */
+    while (H.elem[*p] != NULLKEY && !EQ(K, H.elem[*p])) {
+        /* 该位置中填有记录,并且关键字不相等 */
         (*c)++;
         if (*c < length)
             collision(p); /* 求得下一探查地址p */
@@ -41,7 +51,8 @@ int SearchHash(HashTable H, ElemType K, int *p, int *c) {
     else
         return UNSUCCESS; /* 查找不成功(H.elem[p].key==NULLKEY)，p返回的是插入位置 */
 }
-int InsertHash(HashTable *H, ElemType e) { /* 查找不成功时插入数据元素e到开放定址哈希表H中，并返回查找长度 */
+int InsertHash(HashTable *H, ElemType e) {
+    /* 查找不成功时插入数据元素e到开放定址哈希表H中，并返回查找长度 */
     int c, p;
     c = 0;
     if (SearchHash(*H, e, &p, &c)) /* 表中已有与e有相同关键字的元素 */
@@ -54,7 +65,7 @@ int InsertHash(HashTable *H, ElemType e) { /* 查找不成功时插入数据元�
 }
 void TraverseHash(HashTable H) { /* 按哈希地址的顺序打印哈希表，无元素位置用X表示 */
     int i;
-    printf("HashTable Address:0～%d\n", length - 1);
+    // printf("HashTable Address:0～%d\n", length - 1);
     for (i = 0; i < length; i++)
         if (H.elem[i] == NULLKEY) /* 有数据 */
             printf("X ");
@@ -62,6 +73,8 @@ void TraverseHash(HashTable H) { /* 按哈希地址的顺序打印哈希表，�
             printf("%d ", H.elem[i]);
     printf("\n");
 }
+
+
 main() {
     float i = 0, j = 0;
     ElemType e;
@@ -87,8 +100,11 @@ main() {
 
 题型: 编程题   语言: G++;GCC
 
-Description 使用哈希函数：H(k)=3*k MOD
-length，并采用开放定址法处理冲突。试对输入的关键字序列构造哈希表，哈希表长度为length，求等概率情况下查找成功的平均查找长度，并设计构造哈希表的完整的算法。本题给出部分代码，请补全Hash函数和解决冲突的collison函数。
+Description 使用哈希函数：H(k)=3*k MOD length，
+并采用开放定址法处理冲突。
+试对输入的关键字序列构造哈希表，哈希表长度为length，求等概率情况下查找成功的平均查找长度，并设计构造哈希表的完整的算法。
+本题给出部分代码，请补全Hash函数和解决冲突的collison函数。
+
 
 输入格式
 第一行：输入哈希表的长度；
