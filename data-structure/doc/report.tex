@@ -1,0 +1,840 @@
+% !TEX program = latexmk
+% !TEX options = -xelatex -synctex=1 -interaction=nonstopmode -file-line-error "%DOC%"
+
+
+% 原来模板项目地址https://github.com/RaterChan/SCAU-Thesis-Template-2026
+% 感谢原作者的SCAU-毕业论文-latex模板：raterchan398087@gmail.com或ivlivschan@gmail.com
+
+
+
+
+
+\documentclass[a4paper, 12pt, oneside]{article}
+
+
+\usepackage[UTF8]{ctex}
+\xeCJKsetup{AutoFakeBold=true}
+
+\setmainfont{Latin Modern Roman}
+
+\usepackage[a4paper, top=2.55cm, bottom=2.75cm, left=2.4cm, right=2.4cm, bindingoffset=0.5cm, headheight=15pt, headsep=0.37cm, footskip=0.85cm]{geometry}
+
+
+\usepackage{setspace}
+\setstretch{1.70}
+
+\usepackage{amsmath}
+\allowdisplaybreaks[4]
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{newtxmath}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{threeparttable}
+\usepackage{enumerate} % 增加的列举包
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=fullflexible,
+    basicstyle=\ttfamily\small,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+% ================= 图、表、公式编号与样式自动化（非必要不修改） =================
+% 规范：公式编号如“(式1)”，写在右边行末。
+\makeatletter
+\def\tagform@#1{\maketag@@@{(式#1\unskip\@@italiccorr)}}
+\makeatother
+\renewcommand{\theequation}{\arabic{equation}} % 内部编号恢复纯数字，防交叉引用套娃
+
+% 表格采用三线表，上下线用1.5磅粗线，中间线用1磅细线
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\lightrulewidth}{1pt}
+
+% 定义图表标题字体为宋体五号
+\DeclareCaptionFont{wuhao}{\zihao{5}\songti}
+
+% 图号/表号后空1个字距写图题/表题
+\DeclareCaptionLabelFormat{myfig}{图#2}
+\DeclareCaptionLabelFormat{mytab}{表#2}
+
+% 图题放图下方居中，图表上下各空一行(通过skip调整)
+\captionsetup[figure]{labelformat=myfig, labelsep=quad, font=wuhao, position=bottom, skip=1.5ex}
+
+% 表题放表格上方居中
+\captionsetup[table]{labelformat=mytab, labelsep=quad, font=wuhao, position=top, skip=1.5ex}
+
+% 图中若有分图时，分图号用“(a)”“(b)”置于分图之下
+\captionsetup[subfigure]{labelformat=simple, labelsep=space, font=wuhao}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+% ================= 标题格式与目录 =================
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% 标题阿拉伯数字连续编号后空一个字距，无空行
+% 一级标题：黑体四号字，左顶格
+\titleformat{\section}{\zihao{4}\heiti}{\thesection\quad}{0pt}{}
+\titlespacing*{\section}{0pt}{*1.5}{*1.5} % 使用相对单位替代 0pt，恢复正常行距缓冲
+
+% 二级标题：黑体小四号字，左顶格
+\titleformat{\subsection}{\zihao{-4}\heiti}{\thesubsection\quad}{0pt}{}
+\titlespacing*{\subsection}{0pt}{*1.2}{*1.2}
+
+% 三级标题：楷体小四号字，左顶格
+\titleformat{\subsubsection}{\zihao{-4}\kaishu}{\thesubsubsection\quad}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{*1}{*1}
+
+% 四级标题：楷体小四号字，左顶格
+\titleformat{\paragraph}{\zihao{-4}\kaishu}{\theparagraph\quad}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{*1}{*1}
+
+% 目录两字居中，空4个字距，黑体四号；显示三级标题，内容宋体小四
+\setcounter{tocdepth}{3}
+\renewcommand{\cfttoctitlefont}{\hfill\zihao{4}\heiti}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\contentsname}{目\hspace{4em}录}
+\renewcommand{\cftsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsubsecfont}{\zihao{-4}\songti}
+\renewcommand{\cftsubsubsecpagefont}{\zihao{-4}\songti}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% 层次标题序号一律左对齐
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{0pt}
+\setlength{\cftsubsubsecindent}{0pt}
+
+% 统一目录行距
+\setlength{\cftbeforesecskip}{0pt plus 5pt}
+\setlength{\cftbeforesubsecskip}{0pt plus 3pt}
+\setlength{\cftbeforesubsubsecskip}{0pt plus 3pt}
+
+% 调整编号宽度，防止左对齐后长编号（如 1.1.1）与后续汉字粘连
+\setlength{\cftsecnumwidth}{1.5em}
+\setlength{\cftsubsecnumwidth}{2.2em}
+\setlength{\cftsubsubsecnumwidth}{3.0em}
+
+% ================= 页眉页脚与脚注设定 =================
+\usepackage{fancyhdr}
+% 全部不加页眉。页码数字两侧不加修饰线，位于页脚居中，五号字。
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[C]{\zihao{5}\thepage}
+}
+\pagestyle{plain}
+
+% 脚注右上标连续编号，宋体小五号字
+\renewcommand{\footnotesize}{\zihao{-5}\songti}
+
+\usepackage[hidelinks]{hyperref} % 提供目录及交叉引用跳转
+
+% ================= 引用工具 cleveref (必须放最后) =================
+\usepackage{cleveref}
+
+% 汉化并消除英式空格（#2和#3是超链接锚点，#1是数字）
+\crefformat{figure}{#2图#1#3}
+\crefformat{table}{#2表#1#3}
+\crefformat{equation}{#2式#1#3}
+\crefformat{theorem}{#2定理#1#3}
+\crefformat{lemma}{#2引理#1#3}
+\crefformat{remark}{#2注解#1#3}
+\crefformat{section}{#2第#1节#3}
+
+% 汉化多重引用时的连词（比如同时引用两个图，三个公式）
+\newcommand{\crefpairconjunction}{~和~}
+\newcommand{\crefmiddleconjunction}{、}
+\newcommand{\creflastconjunction}{~和~}
+
+% ================= 定理、引理与注解环境定制 =================
+
+% 自定义一个适合中文排版的定理样式 "cn_theorem"
+\newtheoremstyle{cn_theorem}
+  {0pt}           % 段前间距：0pt
+  {0pt}           % 段后间距：0pt
+  {\normalfont}   % 正文字体：强制使用正常字体（宋体，绝不倾斜）
+  {2\ccwd}        % 缩进：首行自动缩进两个中文字符
+  {\heiti}        % 表头字体：让“定理”、“引理”显示为黑体
+  {}              % 表头后的标点：留空
+  {\ccwd}         % 表头与正文之间的空格：空一个中文字符
+  {}              % 表头自定义格式：使用默认
+
+% 激活并应用上述样式
+\theoremstyle{cn_theorem}
+
+% 全部独立计数，全挂载在 section 之下
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}{引理}[section]   % 不再共享 theorem 的计数器，独立使用自己的
+\newtheorem{remark}{注解}[section]  % 注解也独立
+
+% 将默认的证明环境英文 "Proof" 替换为中文黑体的 "证明"
+\renewcommand{\proofname}{\heiti 证明}
+
+% ================= 附录 =================
+\newcommand{\startappendix}{
+    \setcounter{section}{0}
+    \renewcommand{\thesection}{附录\Alph{section}} 
+    \renewcommand{\thefigure}{\Alph{section}\arabic{figure}}
+    \renewcommand{\thetable}{\Alph{section}\arabic{table}}
+    \renewcommand{\theequation}{式\Alph{section}\arabic{equation}}
+    
+    \renewcommand{\theHsection}{\Alph{section}}
+    \renewcommand{\theHfigure}{\Alph{section}\arabic{figure}}
+    \renewcommand{\theHtable}{\Alph{section}\arabic{table}}
+    \renewcommand{\theHequation}{\Alph{section}\arabic{equation}}
+    
+    \setcounter{figure}{0}
+    \setcounter{table}{0}
+    \setcounter{equation}{0}
+
+    \titleformat{\section}{\zihao{4}\heiti\centering}{\thesection\quad}{0pt}{}
+    \addtocontents{toc}{\protect\setlength{\cftsecnumwidth}{4.5em}}
+}
+
+% ************************ 导言区结束，文档开始 ************************ 
+
+\begin{document}
+\pagenumbering{alph}
+
+% 正文基础字体设定为宋体小四，首行缩进两字距
+\zihao{-4}\songti
+\setlength{\parindent}{2em}
+
+% --------------------封面--------------------
+\clearpage
+\thispagestyle{empty}
+\vfill
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{SCAU-LOGO.jpg}
+\end{center}
+\vfill
+\begin{center}
+    {\zihao{-0} \songti{} \textbf{数据结构课设}} %宋体是没有粗体的，这个到最后答辩前手动用Acrobat或者WPS加粗这几个字即可
+\end{center}
+\vfill
+\vfill
+\vfill
+\vfill
+\begin{center}
+    \zihao{-3} \songti{}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{ll}
+        \makebox[4em][s]{学\hfill{}院}： & \underline{\makebox[9.5cm]{数学与信息学院、软件学院}}                                                                                                                                         \\
+        \makebox[4em][s]{专\hfill{}业}： & \underline{\makebox[9.5cm]{计算机科学与技术}}                                                                                                                                             \\
+        \makebox[4em][s]{姓\hfill{}名}： & \underline{\makebox[9.5cm]{shenpan233}}                                                                                                                                           \\
+        \makebox[4em][s]{学\hfill{}号}： & \underline{\makebox[9.5cm]{shenpanpro@gmail.com}}                                                                                                                                 \\
+        \makebox[4em][s]{指导教师}：       & \underline{\makebox[3.8cm]{杨老师}}\makebox[1.9cm][c]{职称}\underline{\makebox[3.8cm]{讲师}}                                                                                             \\
+        \makebox[4em][s]{提交日期}：       & \underline{\makebox[2.2cm]{\the\year}}\makebox[0.9cm][c]{年}\underline{\makebox[2.2cm]{\the\month}}\makebox[0.9cm][c]{月}\underline{\makebox[2.2cm]{\the\day}}\makebox[1.1cm][r]{日} \\
+    \end{tabular}
+\end{center}
+
+\vspace{3em}
+\clearpage
+
+% --------------------目录--------------------
+\clearpage
+\tableofcontents
+
+% --------------------正文--------------------
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{分析题目要求}
+\subsection{题目要求分析}
+根据《<数据结构>综合性、设计性实验指导》的实验内容，本实验的研究对象为平衡二叉树（Balanced Binary Tree, AVLTree），基于基本的二叉树完成对平衡二叉树的增加、删除、修改、查询（后文会简称为增删改查）、遍历、统计等操作。
+\begin{enumerate}
+    \item {
+          插入新节点。
+          往二叉树中插入新节点，并且插入新节点之后要求左右平衡，
+          要求形成平衡二叉树，并且维护好左右子树的平衡。
+          }
+    \item {
+          递归遍历树。
+          前序、中序、后序遍历二叉树 （递归）。
+          平衡二叉树本质上也是二叉树，实现二叉树的前序遍历、中序遍历和后序遍历的递归算法。递归遍历能够直接体现二叉树本身的递归定义，可以帮助我们更好地理解二叉树结构和递归思想。
+          }
+
+    \item {
+          非递归算法遍历树。
+          前序、中序、后序遍历的非递归算法。
+          由于递归遍历算法需要消耗大量系统栈资源，容易导致栈溢出。可以用自定义栈来模拟系统栈，从而实现对二叉树的遍历。
+          }
+    \item {
+          层次遍历二叉树。
+          实现二叉树的层次遍历，按照从上到下、从左到右的顺序访问该二叉树中的各个节点，本操作童谣需要借助栈。
+          }
+    \item {
+          在二叉树中查找给定关键字。
+          在该二叉树中查找指定关键字（key）的节点，函数返回值为成功1,失败0。
+          }
+    \item {
+          交换各结点的左右子树。
+          实现对二叉树所有节点的左右子树的交换操作，该操作需要遍历访问每个节点，通常使用递归方法，得到一颗镜像二叉树。
+          }
+    \item {
+          求二叉树的深度。
+          从根节点计算到高度最大的叶子结点，该功能可以利用递归，得到根节点的左右子树的高度，取较大值加上根节点本身的一层。
+          }
+    \item {
+          叶子结点数。
+          统计二叉树中的叶子结点，即没有左右子树的节点数量，该操作需要遍历所有节点，并判断是否符合要求、
+          }
+    \item {
+          删除某结点。
+          实现删除平衡二叉树中的指定节点，删除操作需要根据关键词查找目标节点，并根据该节点是否含有子树进行进一步操作，而且删除后需要维持平衡二叉树的结构。
+          }
+\end{enumerate}
+综上所述，本实验不仅要求实现二叉树的基本操作，还要求分别使用递归、栈和队列等不同方法解决二叉树问题。通过本实验，可以进一步理解二叉树的存储方式、遍历过程以及树结构中查找、修改和统计等算法的设计思路。
+
+\subsection{规范}
+\subsection{程序设计规范}
+
+由于本实验没有具体规定编程语言，本文采用 C++ 语言完成程序设计。C++ 支持面向对象程序设计，适合将平衡二叉树封装为一个类，将插入、删除、查找、遍历、统计等操作封装为成员函数。这样既可以提高程序结构的清晰度，也便于后续对各个功能进行测试和维护。
+
+本程序以平衡二叉树 AVLTree 作为主要数据结构。树中每个结点保存关键字、父结点指针、左孩子指针、右孩子指针、平衡因子以及结点高度。程序通过这些信息维护二叉排序树性质和平衡二叉树性质。对外提供的主要功能包括插入新结点、递归遍历、非递归遍历、层次遍历、查找关键字、交换左右子树、求树的深度、统计叶子结点数以及删除指定结点。
+
+\subsubsection{函数命名、参数与返回值规范}
+
+为了使程序结构清晰，本文将平衡二叉树的基本操作封装为 AVLTree 类的成员函数。各函数的命名、参数和返回值如表 \ref{tab:funs} 所示。
+
+
+
+\subsubsection{输入形式与输入范围}
+
+本程序采用菜单交互的方式进行输入。用户首先输入一个整数作为菜单选项，程序根据该选项执行对应功能。当用户选择插入、查找或删除操作时，需要继续输入一个整数作为结点关键字。
+
+输入内容主要包括以下几类：
+
+\begin{enumerate}
+    \item {
+          菜单选项：输入整数表示要执行的功能，例如插入、删除、查找、遍历、统计等操作。
+          }
+    \item {
+          插入结点：输入一个整数作为新结点的关键字。
+          }
+    \item 查找结点：输入一个整数作为待查找的关键字。
+    \item 删除结点：输入一个整数作为待删除的关键字。
+\end{enumerate}
+
+关键字的数据类型为 int，因此输入范围应满足 C++ 中 int 类型的取值范围。为便于测试和观察树结构，实验测试时一般选取较小范围内的整数，例如 1 到 100 之间的整数。若输入的关键字已经存在，则插入失败；若查找或删除的关键字不存在，则返回失败结果。
+
+\subsubsection{输出形式}
+
+程序的输出主要包括操作结果和遍历结果两类。
+
+对于插入、查找和删除操作，程序输出操作是否成功。例如，插入成功时输出插入成功，若插入重复关键字则输出插入失败；查找成功时输出查找成功，查找不到则输出查找失败；删除成功时输出删除成功，若目标结点不存在则输出删除失败。
+
+对于遍历操作，程序输出一个整数序列。前序遍历、中序遍历、后序遍历和层次遍历均以 vector\textless{}int\textgreater{} 的形式保存结果，并按照访问顺序依次输出其中的关键字。对于求深度和统计叶子结点数操作，程序直接输出对应的整数结果。
+
+因此，程序输出形式可以归纳如下：
+
+\begin{enumerate}
+    \item 插入、查找、删除等操作输出布尔结果或相应提示信息。
+    \item 遍历操作输出关键字序列。
+    \item 求深度操作输出二叉树的深度。
+    \item 统计叶子结点数操作输出叶子结点总数。
+    \item 交换左右子树操作输出镜像后的遍历结果，用于验证交换是否成功。
+\end{enumerate}
+
+\subsubsection{程序功能要求}
+
+本程序最终需要实现一棵平衡二叉树的基本操作。具体来说，程序应能够完成以下功能：
+
+\begin{enumerate}
+    \item 能够向平衡二叉树中插入新结点，并在插入后维护平衡二叉树的结构。
+    \item 能够分别使用递归方法完成前序遍历、中序遍历和后序遍历。
+    \item 能够分别使用非递归方法完成前序遍历、中序遍历和后序遍历。
+    \item 能够使用队列完成二叉树的层次遍历。
+    \item 能够根据给定关键字在树中查找对应结点，并返回查找结果。
+    \item 能够交换每个结点的左右子树，得到原二叉树的镜像结构。
+    \item 能够计算二叉树的深度。
+    \item 能够统计二叉树中的叶子结点数。
+    \item 能够删除指定关键字对应的结点，并在删除后尽量保持平衡二叉树的结构。
+\end{enumerate}
+
+综上，程序不仅要完成普通二叉树的遍历和统计操作，还要体现平衡二叉树的特点，即在插入和删除过程中维护树的平衡性，使树的高度保持在较低水平，从而提高查找、插入和删除操作的效率。
+\clearpage
+\begin{table}[htbp]
+    \centering
+    \caption{函数规范}
+    \label{tab:funs}
+    \begin{center}
+        \begin{tabularx}{\textwidth}{|c|c|c|X|}
+            \toprule
+            函数功能    & 函数名                    & 参数         & 返回值                                      \\ \hline
+            \midrule
+            插入新子节点  & insert                 & 要插入的值（int） & 插入结果（bool，true为插入成功，false为插入失败）          \\
+            递归式先序遍历 & traversal\_preorder    & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            递归式中序遍历 & traversal\_in          & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            递归式后序遍历 & traversal\_post        & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            非递归先序遍历 & traversal\_preorder\_s & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            非递归中序遍历 & traversal\_in\_s       & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            非递归后序遍历 & traversal\_post\_s     & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            层次遍历    & traversal\_level       & 无          & 遍历结果（vector\textless{}int\textgreater{}） \\
+            关键词查找   & search                 & 关键词（int）   & 查找结果（bool，true为查找成功，false为查找失败）          \\
+            交换左右子树  & mirror                 & 无          & 镜像结果（*AVLTree）                           \\
+            统计叶子数   & count\_leaves          & 无          & 叶子结点数（unsigned）                          \\
+            计算深度    & deep                   & 无          & 树深度（unsigned）                            \\
+            删除节点    & del                    & 关键词（int）   & 删除结果（bool，true为删除成功，false为删除失败）          \\
+            \bottomrule
+        \end{tabularx}
+
+    \end{center}
+\end{table}
+
+\section{解题思路}
+实验中我们采取链式存储结构，形成一棵链树，每个节点中保存
+父节点指针、左孩子指针、右孩子指针、key、平衡因子（balance factor, BF）、树深度。
+
+主要用到链表、栈、队列和动态数组。其中，链表用于存储树结点，栈用于实现非递归遍历，队列用于实现层次遍历，动态数组用于保存并返回遍历结果。
+
+\subsection{数据结构定义}
+
+\begin{lstlisting}[language=C++]
+    typedef struct Node {
+        Node *parent; // 父节点
+        Node *left; // 左孩子
+        Node *right; // 右孩子
+        int key;
+        int bf; // 平衡因子balance factor
+        unsigned h; // 树深度
+    } *AVLNode;
+\end{lstlisting}
+
+\subsection{插入操作}
+然后按照二叉排序树的性质寻找插入位置：如果待插入key小于当前结点的key，则继续进入左子树；若大于当前结点关键字，则继续进入右子树；若等于当前结点关键字，则说明该关键字已经存在，插入失败，返回false。
+
+找到空位置后，新建结点并根据大小关系与其父节点进行连接。
+
+由于插入新结点后可能破坏 AVL 树的平衡性，因此需要从新插入结点开始自下而上更新高度和BF，并在发现节点失衡的时候进行旋转操作。
+
+插入操作的伪码如下：
+
+\begin{lstlisting}
+Insert(key):
+    if root == nullptr{
+        root = new Node(key)
+        return true
+    }
+    curr = root
+    parent = nullptr
+    while curr != nullptr{
+        parent = curr
+            if key < curr->key:
+                curr = curr->left
+            else if key > curr->key:
+                curr = curr->right
+            else:
+                return false
+    }
+    newNode = new Node(key)
+    newNode->parent = parent
+    if key < parent->key:
+        parent->left = newNode
+    else:
+        parent->right = newNode
+    /*
+        从 newNode 开始向上更新高度和平衡因子
+        若出现失衡，则根据 LL、RR、LR、RL 四种情况进行旋转
+    */
+    return true
+\end{lstlisting}
+
+\subsection{旋转调整}
+
+
+\subsection{平衡因子调整}
+
+
+\subsection{高度调整}
+
+
+
+\subsection{递归遍历}
+
+
+\subsection{非递归遍历}
+
+
+\subsection{层次遍历}
+
+
+\subsection{交换左右子树}
+
+
+\subsection{求二叉树深度}
+
+\subsection{删除操作}
+
+
+
+\section{调试分析}
+
+\subsection{调试过程中遇到的问题及解决方法}
+
+\subsection{测试及结果分析}
+
+\subsection{算法的效率分析和改进设想}
+
+
+\subsection{经验和体会}
+
+
+\clearpage
+\section{附录}
+
+\subsection{头文件定义}
+AVLTree.h
+
+\begin{lstlisting}[language=c++]
+#ifndef AVLTree
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+class AVLTree {
+public:
+    typedef struct Node {
+        Node *parent; // 父节点
+        Node *left; // 左子树
+        Node *right; // 右子树
+        int key;
+        int bf; // 平衡因子balance factor
+        unsigned h; // 树深度
+        Node(int k) : key(k), parent(nullptr), left(nullptr), right(nullptr), h(1) {}
+    } *AVLNode;
+    // -------------------------丑陋的分割线-------------------------------------
+    vector<int> traversal_preorder(); // 基于递归的先序遍历
+    vector<int> traversal_in(); // 基于递归的中序遍历
+    vector<int> traversal_post(); // 基于递归的后序遍历
+    vector<int> traversal_level(); // 基于队列的层次遍历
+    vector<int> traversal_preorder_s(); // 基于栈的先序遍历
+    vector<int> traversal_in_s(); // 基于栈的中序遍历
+    vector<int> traversal_post_s(); // 基于栈的后序遍历
+    // -------------------------华丽的分割线-------------------------------------
+    bool insert(int key);
+    bool search(int key);
+    bool del(int key);
+    // -------------------------随便的分割线-------------------------------------
+    unsigned count_leaves();
+    void mirror();
+    // -------------------------简单的分割线-------------------------------------
+
+    AVLTree() : root(nullptr) {}
+
+private:
+    AVLNode root;
+    AVLNode rotate_right(const AVLNode &broken);
+    AVLNode rotate_left(const AVLNode &broken);
+    AVLNode rotate_left_right(const AVLNode &broken);
+    AVLNode rotate_right_left(const AVLNode &broken);
+    void re_BF(AVLNode &node);
+};
+#endif
+\end{lstlisting}
+
+\subsection{插入}
+insert.cpp
+
+\begin{lstlisting}[language=c++]
+#include <AVLTree.h>
+// LL-type的重新平衡，右旋操作，看那个csdn的图就很好写了
+AVLTree::AVLNode AVLTree::rotate_right(const AVLTree::AVLNode &broken) {
+    if (broken == nullptr || broken->left == nullptr) {
+        return nullptr;
+    }
+    // 做一下保存操作
+    AVLNode left = broken->left;
+    AVLNode parent = broken->parent;
+
+    // 右旋
+    broken->left = left->right;
+    if (broken->left) {
+        broken->left->parent = broken;
+    }
+    left->right = broken;
+    broken->parent = left;
+    left->parent = parent;
+
+    return left;
+}
+
+// RR-type 左旋
+AVLTree::AVLNode AVLTree::rotate_left(const AVLTree::AVLNode &broken) {
+    if (broken == nullptr || broken->right == nullptr) {
+        return nullptr;
+    }
+    // 备份
+    AVLNode r = broken->right;
+    AVLNode parent = broken->parent;
+
+    // 左旋操作
+    broken->right = r->left;
+    if (broken->right) {
+        broken->right->parent = broken->right;
+    }
+    r->left = broken;
+    broken->parent = r;
+    r->parent = parent;
+    return r;
+}
+// LR-type
+AVLTree::AVLNode AVLTree::rotate_left_right(const AVLTree::AVLNode &broken) {
+    if (broken == nullptr || broken->left == nullptr) {
+        return nullptr;
+    }
+    broken->right = rotate_left(broken);
+    return rotate_right(this->root);
+}
+
+// LR-type
+AVLTree::AVLNode AVLTree::rotate_right_left(const AVLTree::AVLNode &broken) {
+    if (broken == nullptr || broken->left == nullptr) {
+        return nullptr;
+    }
+    broken->left = rotate_right(broken);
+    return rotate_left(broken);
+}
+
+void AVLTree::re_BF(AVLNode &node) {
+    while (node) {
+        // 更新Balance Factor
+        int left_height = node->left ? node->left->h : 0, right_height = node->right ? node->right->h : 0;
+        node->bf = right_height - left_height;
+        node->h = max(left_height, right_height) + 1;
+        // 需要旋转
+        if (node->bf < -1) { // 左子树过高
+            if (node->left && node->left->bf <= 0) {
+                node = rotate_right(node); // LL-type
+            } else if (node->left) {
+                node = rotate_left_right(node); // LR-type
+            }
+        } else if (node->bf > 1) { // 右子树过高
+            if (node->right && node->right->bf >= 0) {
+                node = rotate_left(node); // RR-type
+            } else if (node->right) {
+                node = rotate_right_left(node); // RL-type
+            }
+        }
+        // 向上更新父节点
+        if (!node->parent) {
+            this->root = node; // 更新root
+        }
+        node = node->parent;
+    }
+}
+
+// 插入操作
+bool AVLTree::insert(int key) {
+    if (!this->root) {
+        this->root = new Node(key);
+        return;
+    }
+    AVLNode node = new Node(key), curr = this->root, p = nullptr;
+    // 找到插入位置
+    while (curr) {
+        p = curr;
+        if (key < curr->key) {
+            curr = curr->left;
+        } else if (key > curr->key) {
+            curr = curr->right;
+        } else {
+            // 已经存在相同key，不插入
+            return false;
+        }
+    }
+
+    // 创建新节点
+    AVLNode new_node = new Node(key);
+    new_node->parent = p;
+    if (key < p->key) {
+        p->left = new_node;
+    } else {
+        p->right = new_node;
+    }
+    // 插入后沿父节点向上更新balance factor
+    re_BF(new_node);
+    return true;
+}
+
+\end{lstlisting}
+
+
+\subsection{递归遍历}
+range.cpp
+\begin{lstlisting}
+#include <queue>
+#include <vector>
+#include "AVLTree.h"
+
+// 先序遍历，遍历之后返回一个数组，之后再打印吧，通用一点
+vector<int> AVLTree::traversal_preorder() {
+    vector<int> arr;
+    _traversal_preorder_impl(this->root, arr);
+    return arr;
+}
+
+// 先序遍历，内部实现
+void _traversal_preorder_impl(const AVLTree::AVLNode &root, vector<int> &arr) {
+    if (root == nullptr) {
+        return;
+    }
+    arr.push_back(root->key);
+    _traversal_preorder_impl(root->left, arr);
+    _traversal_preorder_impl(root->right, arr);
+}
+
+
+// 中序遍历，遍历之后返回一个数组
+vector<int> AVLTree::traversal_in() {
+    vector<int> arr;
+    _traversal_in_impl(this->root, arr);
+    return arr;
+}
+
+// 中序遍历，内部实现
+void _traversal_in_impl(const AVLTree::AVLNode &root, vector<int> &arr) {
+    if (root == nullptr) {
+        return;
+    }
+    _traversal_in_impl(root->left, arr);
+    arr.push_back(root->key);
+    _traversal_in_impl(root->right, arr);
+}
+
+
+// 后序遍历，遍历之后返回一个数组
+vector<int> AVLTree::traversal_post() {
+    vector<int> arr;
+    _traversal_post_impl(this->root, arr);
+    return arr;
+}
+
+// 后序遍历，内部实现
+void _traversal_post_impl(const AVLTree::AVLNode &root, vector<int> &arr) {
+    if (root == nullptr) {
+        return;
+    }
+    _traversal_post_impl(root->left, arr);
+    _traversal_post_impl(root->right, arr);
+    arr.push_back(root->key);
+}
+
+
+// 层次遍历，借助队列
+vector<int> AVLTree::traversal_level() {
+    if (this->root == nullptr) {
+        return ;
+    }
+    vector<int> arr;
+    queue<AVLNode> q;
+    q.push(this->root);
+
+    while (!q.empty()) {
+        AVLNode curr = q.front();
+        q.pop();
+        arr.push_back(curr->key);
+        if (curr->left != nullptr) {
+            q.push(curr->left);
+        }
+        if (curr->right != nullptr) {
+            q.push(curr->right);
+        }
+    }
+
+    return arr;
+}
+
+\end{lstlisting}
+
+\subsection{非递归遍历}
+range\_s.cpp
+
+\begin{lstlisting}
+// 这个是使用栈进行的遍历
+
+#include <stack>
+#include "AVLTree.h"
+#define _left 0 // 下一步访问左子树
+#define _right 1 // 下一步访问右子树
+#define _leave 2 // 下一步弹出
+
+// 利用双栈实现：中序遍历
+vector<int> AVLTree::traversal_in_s() {
+        vector<int> arr;
+        AVLNode curr;
+        stack<AVLNode> s_node;
+        stack<char> s_op;
+        s_node.push(this->root);
+        s_op.push(_left);
+        while (!s_node.empty()) {
+                curr = s_node.top();
+                // 查看下一步的操作
+                char op = s_op.top();
+                s_op.pop();
+                switch (op) {
+                        case _left:
+                        s_op.push(_right); // 当前节点下一步要访问右子树
+                        if (curr->left != nullptr) { // 下一个要访问的节点 是 左子树
+                                s_node.push(curr->left);
+                                s_op.push(_left); // 当前节点的左子树下一步 要 访问 左子树
+                            }
+                        break;
+                        case _right:
+                        arr.push_back(curr->key); // 因为是先序遍历直接做这个操作就行了
+                        s_op.push(_leave); // 当前节点下一步应该被弹出
+                        if (curr->right != nullptr) { // 下一个要访问的节点 是 右子树
+                                s_node.push(curr->right);
+                                s_op.push(_left);
+                            }
+                        break;
+                        case _leave:
+                        s_node.pop(); // 弹出
+                        break;
+                    }
+            }
+        return arr;
+    }
+
+// 利用双栈实现：后序遍历
+vector<int> AVLTree::traversal_post_s() {
+vector<int> arr;
+AVLNode curr;
+stack<AVLNode> s_node;
+stack<char> s_op;
+s_node.push(this->root);
+s_op.push(_left);
+while (!s_node.empty()) {
+curr = s_node.top();
+// 查看下一步的操作
+char op = s_op.top();
+s_op.pop();
+switch (op) {
+case _left:
+s_op.push(_right); // 当前节点下一步要访问右子树
+if (curr->left != nullptr) { // 下一个要访问的节点 是 左子树
+        s_node.push(curr->left);
+        s_op.push(_left); // 当前节点的左子树下一步 要 访问 左子树
+    }
+break;
+case _right:
+s_op.push(_leave); // 当前节点下一步应该被弹出
+if (curr->right != nullptr) { // 下一个要访问的节点 是 右子树
+s_node.push(curr->right);
