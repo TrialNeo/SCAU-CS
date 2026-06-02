@@ -1,4 +1,4 @@
-#include <AVLTree.h>
+#include "AVLTree.h"
 
 
 // LL-type的重新平衡，右旋操作，看那个csdn的图就很好写了
@@ -19,6 +19,15 @@ AVLTree::AVLNode AVLTree::rotate_right(const AVLTree::AVLNode &broken) {
     broken->parent = left;
     left->parent = parent;
 
+    // 更新父节点的子指针
+    if (parent) {
+        if (parent->left == broken) {
+            parent->left = left;
+        } else {
+            parent->right = left;
+        }
+    }
+
     return left;
 }
 
@@ -34,12 +43,21 @@ AVLTree::AVLNode AVLTree::rotate_left(const AVLTree::AVLNode &broken) {
     // 左旋操作
     broken->right = r->left;
     if (broken->right) {
-        broken->right->parent = broken->right;
+        broken->right->parent = broken;
     }
 
     r->left = broken;
     broken->parent = r;
     r->parent = parent;
+
+    // 更新父节点的子指针
+    if (parent) {
+        if (parent->left == broken) {
+            parent->left = r;
+        } else {
+            parent->right = r;
+        }
+    }
 
     return r;
 }
@@ -48,16 +66,16 @@ AVLTree::AVLNode AVLTree::rotate_left_right(const AVLTree::AVLNode &broken) {
     if (broken == nullptr || broken->left == nullptr) {
         return nullptr;
     }
-    broken->right = rotate_left(broken);
-    return rotate_right(this->root);
+    broken->left = rotate_left(broken->left);
+    return rotate_right(broken);
 }
 
-// LR-type
+// RL-type
 AVLTree::AVLNode AVLTree::rotate_right_left(const AVLTree::AVLNode &broken) {
-    if (broken == nullptr || broken->left == nullptr) {
+    if (broken == nullptr || broken->right == nullptr) {
         return nullptr;
     }
-    broken->left = rotate_right(broken);
+    broken->right = rotate_right(broken->right);
     return rotate_left(broken);
 }
 
@@ -65,17 +83,17 @@ AVLTree::AVLNode AVLTree::rotate_right_left(const AVLTree::AVLNode &broken) {
 void AVLTree::re_BF(AVLNode &node) {
     while (node) {
         // 更新Balance Factor
-        int left_height = node->left ? node->left->h : 0, right_height = node->right ? node->right->h : 0;
+        int left_height = this->_depth_imp(node->left);
+        int right_height = this->_depth_imp(node->right);
         node->bf = right_height - left_height;
-        node->h = max(left_height, right_height) + 1;
         // 需要旋转
-        if (node->bf < -1) { // 左子树过高
+        if (node->bf < -1) { // 左子树过深
             if (node->left && node->left->bf <= 0) {
                 node = rotate_right(node); // LL-type
             } else if (node->left) {
                 node = rotate_left_right(node); // LR-type
             }
-        } else if (node->bf > 1) { // 右子树过高
+        } else if (node->bf > 1) { // 右子树过深
             if (node->right && node->right->bf >= 0) {
                 node = rotate_left(node); // RR-type
             } else if (node->right) {
@@ -94,9 +112,9 @@ void AVLTree::re_BF(AVLNode &node) {
 bool AVLTree::insert(int key) {
     if (!this->root) {
         this->root = new Node(key);
-        return;
+        return true;
     }
-    AVLNode node = new Node(key), curr = this->root, p = nullptr;
+    AVLNode curr = this->root, p = nullptr;
 
     // 找到插入位置
     while (curr) {

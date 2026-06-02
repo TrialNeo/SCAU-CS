@@ -13,14 +13,12 @@ public:
         Node *right; // 右子树
         int key;
         int bf; // 平衡因子balance factor
-        unsigned h; // 树深度
-        Node(int k) : key(k), parent(nullptr), left(nullptr), right(nullptr), h(1) {}
+        Node(int k) : key(k), parent(nullptr), left(nullptr), right(nullptr) {}
     } *AVLNode;
     // -------------------------丑陋的分割线-------------------------------------
     vector<int> traversal_preorder(); // 基于递归的先序遍历
     vector<int> traversal_in(); // 基于递归的中序遍历
     vector<int> traversal_post(); // 基于递归的后序遍历
-
     vector<int> traversal_level(); // 基于队列的层次遍历
 
     vector<int> traversal_preorder_s(); // 基于栈的先序遍历
@@ -32,6 +30,7 @@ public:
     bool del(int key);
     // -------------------------随便的分割线-------------------------------------
     unsigned count_leaves();
+    unsigned depth();
     void mirror();
     // -------------------------简单的分割线-------------------------------------
 
@@ -44,7 +43,7 @@ private:
     AVLNode rotate_left(const AVLNode &broken);
     AVLNode rotate_left_right(const AVLNode &broken);
     AVLNode rotate_right_left(const AVLNode &broken);
-
+    unsigned _depth_imp(const AVLTree::AVLNode node);
     void re_BF(AVLNode &node);
 };
 

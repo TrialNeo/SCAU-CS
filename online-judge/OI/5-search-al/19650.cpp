@@ -16,13 +16,25 @@ void traversal(const vector<ll> &arr) {
     putchar('\n');
 }
 
-bool check(vector<ll> &arr) {
-    // 直接用双指针来找就行了
-    auto p = arr.begin(), q = arr.begin() + 1;
-    while (p != arr.end() || q != arr.end()) {
+bool check(const vector<ll> &arr) {
+    // 直接找相邻的 O(n)
+    for (int i = 1; i < arr.size(); ++i) {
+        if ((arr[i - 1] * arr[i]) % 2) {
+            return false;
+        }
     }
+    return true;
 }
 
+
+void solve(vector<ll> &arr) {
+    sort(arr.begin(), arr.end());
+    do {
+        if (check(arr)) {
+            traversal(arr);
+        }
+    } while (next_permutation(arr.begin(), arr.end()));
+}
 
 int main(int argc, char *argv[]) {
     int n = 0;
@@ -31,11 +43,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < n; i++) {
         scanf("%lld", &arr[i]);
     }
-    while (next_permutation(arr.begin(), arr.end())) {
-        while (check(arr)) {
-            traversal(arr);
-        }
-    }
+
     return 0;
 }
 

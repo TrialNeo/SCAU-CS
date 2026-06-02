@@ -20,6 +20,24 @@ bool check_repeat_num(ll n, ll n2) {
 }
 
 
+// 利用前缀和的优化版本
+/* bool check(ll n) {
+    bool exist[10] = {false};
+    while (n) {
+        ll m = n % 10;
+        n /= 10;
+        if (!m) {
+            continue;
+        }
+        if (exist[m]) {
+            return false;
+        }
+        exist[m] = true;
+    }
+    return true;
+}
+ */
+
 int main() {
     ll n = 0;
     while (scanf("%ld", &n) && n) {

@@ -2,6 +2,11 @@
 #include <vector>
 #include "AVLTree.h"
 
+// 前向声明辅助函数
+void _traversal_preorder_impl(const AVLTree::AVLNode &root, vector<int> &arr);
+void _traversal_in_impl(const AVLTree::AVLNode &root, vector<int> &arr);
+void _traversal_post_impl(const AVLTree::AVLNode &root, vector<int> &arr);
+
 // 先序遍历，遍历之后返回一个数组，之后再打印吧，通用一点
 vector<int> AVLTree::traversal_preorder() {
     vector<int> arr;
@@ -59,7 +64,7 @@ void _traversal_post_impl(const AVLTree::AVLNode &root, vector<int> &arr) {
 // 层次遍历，借助队列
 vector<int> AVLTree::traversal_level() {
     if (this->root == nullptr) {
-        return ;
+        return {};
     }
     vector<int> arr;
     queue<AVLNode> q;
