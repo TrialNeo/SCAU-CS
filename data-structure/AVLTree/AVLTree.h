@@ -1,4 +1,5 @@
 #ifndef AVLTree
+#define AVLTREE_H
 
 #include <algorithm>
 #include <vector>
@@ -13,7 +14,8 @@ public:
         Node *right; // 右子树
         int key;
         int bf; // 平衡因子balance factor
-        Node(int k) : key(k), parent(nullptr), left(nullptr), right(nullptr) {}
+        unsigned height; // 子树高度
+        Node(int k) : key(k), height(1), bf(0), parent(nullptr), left(nullptr), right(nullptr) {}
     } *AVLNode;
     // -------------------------丑陋的分割线-------------------------------------
     vector<int> traversal_preorder(); // 基于递归的先序遍历
@@ -43,8 +45,8 @@ private:
     AVLNode rotate_left(const AVLNode &broken);
     AVLNode rotate_left_right(const AVLNode &broken);
     AVLNode rotate_right_left(const AVLNode &broken);
-    unsigned _depth_imp(const AVLTree::AVLNode node);
     void re_BF(AVLNode &node);
+    void update_height(AVLNode node);
 };
 
 #endif

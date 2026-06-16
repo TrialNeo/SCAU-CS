@@ -1,40 +1,68 @@
 #include <algorithm>
-#include <cstdio>
 #include <iostream>
+#include <string>
 #include <vector>
 using namespace std;
 
-
-// 定义一下选手
-struct Player {
-    unsigned num; // 通过题目数量
-    unsigned cost; // 用时
-    char name[20];
+struct player {
+    unsigned ac;
+    unsigned time;
+    string name;
 };
 
-
-// 多排序，做一下两个权重就行有现成的sort
-void bullet_sort_player(vector<Player> arr) {
-    // 居然没有限制空间复杂度，那我们有多少用多少
-        
+bool cmp(const player &x,const player &y) {
+    return x.ac > y.ac || x.ac == y.ac && x.time < y.time;
 }
 
 
-int main(int argc, char const *argv[]) {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-
-    unsigned n = 0;
-    scanf("%u", &n);
-    vector<Player> arr(n);
-    for (int i = 0; i < n; i++) {
-        scanf("%u %u %s", &arr[i].num, &arr[i].cost, arr[i].name);
+int main(int argc, char *argv[]) {
+    int n;
+    cin >> n;
+    vector<player> ps(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> ps[i].ac >> ps[i].time >> ps[i].name;
+    }
+    stable_sort(ps.begin(), ps.end(), cmp);
+    for (int i = 0; i < n; ++i) {
+        cout << ps[i].name << '\n';
     }
 
-
-    for (const auto &p: arr) {
-        puts(p.name);
-    }
     return 0;
 }
+
+
+/*
+Description
+校赛结束了，每一个参赛选手由3个数据项构成（通过题数，用时分钟数，姓名），排名按照通过题数排序
+通过题数多的排前，同题数的，罚时少的排前。如果题数相同，罚时也相同，而按数据读取的先后排。
+给你N个参赛选手的数据，按排序先后，输出姓名
+
+
+
+输入格式
+第一个数为N，（N<=500000）
+此后，每行一个参赛选手的数据，通过题数，用时分钟数，姓名，前两者为整型数，姓名为字符串（不多于20个字符）
+
+
+输出格式
+姓名排名
+
+
+输入样例
+4
+3 5 Jon
+5 100 Smith
+3 5 Tom
+6 95 Hel
+
+
+输出样例
+Hel
+Smith
+Jon
+Tom
+
+
+提示
+由于有500000个数据，输入和输出务必使用scanf和printf
+ */

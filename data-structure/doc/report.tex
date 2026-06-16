@@ -493,6 +493,41 @@ Insert(key):
 
 \subsection{算法的效率分析和改进设想}
 
+本实现中各主要操作的时间复杂度分析如下。
+
+\subsubsection{旋转操作}
+
+四种旋转（LL/RR/LR/RL）均只修改常数个指针，并在旋转后调用 \texttt{update\_height}。\texttt{update\_height} 直接读取左右孩子已存储的 \texttt{height} 字段取最大值，时间复杂度为 O(1)。因此单次旋转操作时间复杂度为 \textbf{O(1)}。
+
+\subsubsection{插入操作}
+
+插入分为两步：首先按二叉搜索树性质查找插入位置，时间复杂度 O(log n)；然后从新节点向上回溯至根，逐层调用 \texttt{update\_height} 更新高度与平衡因子，必要时执行旋转。回溯路径长度等于节点深度，最坏为 O(log n)，每步为 O(1)。故插入总时间复杂度为 \textbf{O(log n)}。
+
+\subsubsection{删除操作}
+
+删除同样包含查找目标节点（O(log n)）、删除节点（O(1) 或查找后继 O(log n)）以及向上回溯平衡（O(log n)）。总时间复杂度为 \textbf{O(log n)}。
+
+\subsubsection{查找操作}
+
+直接按二叉搜索树性质二分查找，时间复杂度为 \textbf{O(log n)}。
+
+\subsubsection{遍历操作}
+
+递归遍历、基于栈的非递归遍历、层次遍历均需访问每个节点恰好一次，时间复杂度均为 \textbf{O(n)}。空间复杂度：递归遍历 O(h)（系统栈），栈遍历 O(n)（显式栈），层次遍历 O(n)（队列），其中 h 为树高。
+
+\subsubsection{统计与工具操作}
+
+\texttt{count\_leaves()} 采用 BFS 遍历全树，时间复杂度 O(n)。\texttt{depth()} 直接返回根结点已维护的 \texttt{height} 字段，时间复杂度 O(1)。\texttt{mirror()} 递归交换所有左右子树，时间复杂度 O(n)。
+
+\subsubsection{当前实现的可改进之处}
+
+\begin{enumerate}
+    \item \textbf{\texttt{depth()} 可优化为 O(1)}：当前 \texttt{depth()} 通过 \texttt{\_depth\_imp} 递归遍历整棵树计算深度，实际上根节点的 \texttt{height} 字段已正确维护了树的深度，直接返回 \texttt{root->height} 即可将 O(n) 降为 O(1)。
+    \item \textbf{查找代码重复}：\texttt{search()} 与 \texttt{del()} 中都包含完全相同的二叉搜索树查找逻辑（按 key 比较沿左右子树下降），可抽取为私有辅助函数 \texttt{\_find\_node(key)} 以减少代码重复，提高可维护性。
+    \item \textbf{附录代码与源文件不一致}：当前附录中 \texttt{rotate\_left\_right} 与 \texttt{rotate\_right\_left} 的实现存在错误（broken->right 和 broken->left 赋值错误），与源码 \texttt{insert.cpp} 不符，需同步修正。
+    \item \textbf{遍历函数返回值风格统一}：部分遍历函数直接返回 \texttt{vector<int>}，而 \texttt{depth()} 和 \texttt{count\_leaves()} 返回 \texttt{unsigned}，接口风格可进一步统一。
+\end{enumerate}
+
 
 \subsection{经验和体会}
 

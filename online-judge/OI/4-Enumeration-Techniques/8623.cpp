@@ -12,8 +12,8 @@ typedef long long ll;
 //        res = 3 + 3/2 = 3 + 1 = 4
 //        res = 4 + 3/3 = 4 + 1 = 5
 // 所以超时部分主要在用了n次循环来算这个数，其实我们可以取模来算， 调一下步长
-long long H(int n) {
-    long long res = 0;
+ll solve(const ll n) {
+    ll res = 0;
     ll q = 0, r = 0;
     for (ll i = 1; i <= n; i = r + 1) {
         q = n / i;
@@ -29,7 +29,7 @@ int main() {
     ll l = 0;
     for (int i = 0; i < n; i++) {
         scanf("%lld", &l);
-        printf("%lld\n", H(l));
+        printf("%lld\n", solve(l));
     }
 }
 

@@ -1,56 +1,55 @@
 // Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/5/27 15:19.
 
-#include <algorithm>
 #include <iostream>
-#include <vector>
 using namespace std;
-typedef long long ll;
-void traversal(const vector<ll> &arr) {
-    for (int i = 0; i < arr.size(); i++) {
-        printf("%lld ", arr[i]);
+
+int n;
+int arr[1001];
+
+void printArr() {
+    for (int i = 0; i < n; i++) {
+        if (i > 0)
+            cout << " ";
+        cout << arr[i];
     }
-    putchar('\n');
+    cout << "\n";
 }
 
-inline int partition(vector<ll> &arr, const int lo, const int hi) {
-    const ll pivot = arr[hi];
-    int i = lo - 1;
-    for (int j = lo; j < hi; j++) {
+// Lomuto 分区，首元素为 pivot
+int partition(int low, int high) {
+    int pivot = arr[low];
+    int i = low;
+    for (int j = low + 1; j <= high; j++) {
         if (arr[j] <= pivot) {
             i++;
             swap(arr[i], arr[j]);
         }
     }
-    swap(arr[i + 1], arr[hi]);
-    return i + 1;
+    swap(arr[i], arr[low]);
+    return i; // pivot 最终下标
 }
 
-
-void quick_sort(vector<ll> &arr, int lo, int hi) {
-    if (lo >= hi) {
-        return;
-    }
-    const int pivot = partition(arr, lo, hi);
-    quick_sort(arr, lo, pivot - 1);
-    quick_sort(arr, pivot + 1, hi);
-    traversal(arr);
+void quicksort(int low, int high) {
+    if (low >= high)
+        return; // 长度 0 或 1，不打印
+    int p = partition(low, high);
+    printArr(); // 分区完成后立即打印
+    quicksort(low, p - 1); // 递归左子区间
+    quicksort(p + 1, high); // 递归右子区间
 }
 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-int main(int argc, char *argv[]) {
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
 
-    int n = 0;
-    scanf("%d", &n);
-    vector<ll> arr(n);
-    for (int i = 0; i < n; i++) {
-        scanf("%lld", &arr[i]);
-    }
-    // sort(arr.begin(),arr.end()); c++这个本身就实现了，其实可以偷懒，但是打印不出来数据，原来是这样太可恶了
-
+    quicksort(0, n - 1);
     return 0;
 }
-
 
 /*
 Description

@@ -6,11 +6,9 @@ AVLTree::AVLNode AVLTree::rotate_right(const AVLTree::AVLNode &broken) {
     if (broken == nullptr || broken->left == nullptr) {
         return nullptr;
     }
-    // 做一下保存操作
     AVLNode left = broken->left;
     AVLNode parent = broken->parent;
 
-    // 右旋
     broken->left = left->right;
     if (broken->left) {
         broken->left->parent = broken;
@@ -19,7 +17,6 @@ AVLTree::AVLNode AVLTree::rotate_right(const AVLTree::AVLNode &broken) {
     broken->parent = left;
     left->parent = parent;
 
-    // 更新父节点的子指针
     if (parent) {
         if (parent->left == broken) {
             parent->left = left;
@@ -27,6 +24,9 @@ AVLTree::AVLNode AVLTree::rotate_right(const AVLTree::AVLNode &broken) {
             parent->right = left;
         }
     }
+
+    update_height(broken);
+    update_height(left);
 
     return left;
 }
@@ -36,11 +36,9 @@ AVLTree::AVLNode AVLTree::rotate_left(const AVLTree::AVLNode &broken) {
     if (broken == nullptr || broken->right == nullptr) {
         return nullptr;
     }
-    // 备份
     AVLNode r = broken->right;
     AVLNode parent = broken->parent;
 
-    // 左旋操作
     broken->right = r->left;
     if (broken->right) {
         broken->right->parent = broken;
@@ -50,7 +48,6 @@ AVLTree::AVLNode AVLTree::rotate_left(const AVLTree::AVLNode &broken) {
     broken->parent = r;
     r->parent = parent;
 
-    // 更新父节点的子指针
     if (parent) {
         if (parent->left == broken) {
             parent->left = r;
@@ -58,6 +55,9 @@ AVLTree::AVLNode AVLTree::rotate_left(const AVLTree::AVLNode &broken) {
             parent->right = r;
         }
     }
+
+    update_height(broken);
+    update_height(r);
 
     return r;
 }
@@ -80,29 +80,33 @@ AVLTree::AVLNode AVLTree::rotate_right_left(const AVLTree::AVLNode &broken) {
 }
 
 
+void AVLTree::update_height(AVLNode node) {
+    unsigned left_h = node->left ? node->left->height : 0;
+    unsigned right_h = node->right ? node->right->height : 0;
+    node->height = max(left_h, right_h) + 1;
+}
+
 void AVLTree::re_BF(AVLNode &node) {
     while (node) {
-        // 更新Balance Factor
-        int left_height = this->_depth_imp(node->left);
-        int right_height = this->_depth_imp(node->right);
-        node->bf = right_height - left_height;
-        // 需要旋转
-        if (node->bf < -1) { // 左子树过深
+        update_height(node);
+        node->bf = (node->right ? node->right->height : 0)
+                 - (node->left ? node->left->height : 0);
+
+        if (node->bf < -1) {
             if (node->left && node->left->bf <= 0) {
-                node = rotate_right(node); // LL-type
+                node = rotate_right(node);
             } else if (node->left) {
-                node = rotate_left_right(node); // LR-type
+                node = rotate_left_right(node);
             }
-        } else if (node->bf > 1) { // 右子树过深
+        } else if (node->bf > 1) {
             if (node->right && node->right->bf >= 0) {
-                node = rotate_left(node); // RR-type
+                node = rotate_left(node);
             } else if (node->right) {
-                node = rotate_right_left(node); // RL-type
+                node = rotate_right_left(node);
             }
         }
-        // 向上更新父节点
         if (!node->parent) {
-            this->root = node; // 更新root
+            this->root = node;
         }
         node = node->parent;
     }
@@ -116,7 +120,6 @@ bool AVLTree::insert(int key) {
     }
     AVLNode curr = this->root, p = nullptr;
 
-    // 找到插入位置
     while (curr) {
         p = curr;
         if (key < curr->key) {
@@ -124,12 +127,10 @@ bool AVLTree::insert(int key) {
         } else if (key > curr->key) {
             curr = curr->right;
         } else {
-            // 已经存在相同key，不插入
             return false;
         }
     }
 
-    // 创建新节点
     AVLNode new_node = new Node(key);
     new_node->parent = p;
 
@@ -139,7 +140,6 @@ bool AVLTree::insert(int key) {
         p->right = new_node;
     }
 
-    // 插入后沿父节点向上更新balance factor
     re_BF(new_node);
 
     return true;

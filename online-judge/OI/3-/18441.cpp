@@ -3,38 +3,31 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
-
-#include "../../../high-level-programming/admin/users.h"
+#include <vector>
 using namespace std;
-#include <cstdio>
-map<unsigned, unsigned> memo{{3, 0}, {5, 2}};
+typedef long long ll;
+map<ll, ll> memo = {{0, 0}, {1, 1}, {2, 2}, {3, 0}};
 
-// 1 2 3 4 5
-// n == 3 => 0
-unsigned countNonPatrol(const unsigned n) {
-    if (n < 3) {
-        return n;
+
+ll solve(ll n) {
+    if (memo.find(n) != memo.end()) {
+        return memo[n];
     }
-    const auto it = memo.find(n);
-    if (it != memo.end()) {
-        return it->second;
-    }
-    const unsigned even = n / 2, odd = n - even, r = countNonPatrol(even) + countNonPatrol(odd);
+    ll r = solve(n / 2) + solve((n + 1) / 2);
     memo[n] = r;
     return r;
 }
 
+int main() {
 
-int main(int argc, char *argv[]) {
-    unsigned n = 0;
-    while (scanf("%u", &n) && n) {
-        printf("%u\n", count(n));
+    ll n = 0;
+    while (scanf("%lld", &n) && n) {
+        printf("%lld\n", solve(n));
     }
+
+
+    return 0;
 }
-
-
-
-
 
 /*
 Description

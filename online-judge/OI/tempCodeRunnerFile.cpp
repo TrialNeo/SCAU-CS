@@ -1,9 +1,19 @@
+#include <algorithm>
+#include <iostream>
+using namespace std;
 
-void solve(vector<int> &arr) {
-    sort(arr.begin(), arr.end());
-    while (next_permutation(arr.begin(), arr.end())) {
-        if (check(arr)) {
-            traversal(arr);
-        }
+
+unsigned gcd(unsigned x, unsigned y) {
+    if (x < y) {
+        swap(x, y);
     }
+    while (y) {
+        int t = y;
+        y = x % y;
+        x = t;
+    }
+    return x;
 }
+
+
+int main() { printf("%d", gcd(3, 6)); }

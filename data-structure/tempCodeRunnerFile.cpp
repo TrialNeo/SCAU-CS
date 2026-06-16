@@ -1,0 +1,1 @@
+        InsertBiTree(T->rchild, e);
