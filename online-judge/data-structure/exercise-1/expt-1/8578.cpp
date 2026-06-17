@@ -1,5 +1,7 @@
+#include <algorithm>
+#include <cstdio>
 #include <malloc.h>
-#include <stdio.h>
+
 
 #define OK 1
 #define ERROR 0
@@ -61,8 +63,39 @@ Status ListDelete_Sq(SqList &L, int i, ElemType &e) { // 算法2.5
     return OK;
 } // ListDelete_Sq
 
-int main(){
-return 0;
+Status ListLoad_Sq(SqList &L) {
+    if (!L.length) {
+        return ERROR;
+    }
+
+    for (int i = 0; i < L.length; i++) {
+        printf("%d ", L.elem[i]);
+    }
+
+    putchar('\n');
+    return OK;
+}
+
+int main() {
+    SqList L;
+    if (!InitList_Sq(L)) {
+        return 0;
+    }
+    int n = 0;
+    scanf("%d", &n);
+    int temp = 0;
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &temp);
+        ListInsert_Sq(L, L.length + 1, temp);
+    }
+
+    printf("The List is:");
+    ListLoad_Sq(L);
+    printf("The turned List is:");
+    // 倒转
+    std::reverse(L.elem, L.elem + L.length);
+    ListLoad_Sq(L);
+    return 0;
 }
 
 /*

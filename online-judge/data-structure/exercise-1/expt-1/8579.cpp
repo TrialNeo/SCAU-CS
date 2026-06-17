@@ -1,9 +1,10 @@
-// Created by Github@TrialNeo(shenpanpro@gmail.com) 
+// Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/3/18.
 
 
-#include<stdio.h>
-#include<malloc.h>
+#include <malloc.h>
+#include <stdio.h>
+
 #define ERROR 0
 #define OK 1
 #define ElemType int
@@ -19,7 +20,7 @@ int CreateLink_L(LinkList &L, int n) {
     int i;
     ElemType e;
     L = new LNode;
-    L->next = NULL; // 先建立一个带头结点的单链表
+    L->next = nullptr; // 先建立一个带头结点的单链表
     q = L;
     for (i = 0; i < n; i++) {
         scanf("%d", &e);
@@ -35,10 +36,11 @@ int CreateLink_L(LinkList &L, int n) {
 int LoadLink_L(LinkList &L) {
     // 单链表遍历
     LinkList p = L->next;
-    if (p == nullptr)printf("The List is empty!"); // 请填空
+    if (p == nullptr)
+        printf("The List is empty!"); // 请填空
     else {
         printf("The LinkList is:");
-        while (p != nullptr) // 请填空
+        while (p) // 请填空
         {
             printf("%d ", p->data);
             p = p->next; // 请填空
@@ -48,12 +50,12 @@ int LoadLink_L(LinkList &L) {
     return OK;
 }
 
-int LinkInsert_L(LinkList &L, int i,ElemType e) {
+int LinkInsert_L(LinkList &L, int i, ElemType e) {
     // 算法2.9
     // 在带头结点的单链线性表L中第i个位置之前插入元素e
     // 请补全代码
 
-    //先找到位置，至于怎么找呢，while循环，然后记录次数就行了
+    // 先找到位置，至于怎么找呢，while循环，然后记录次数就行了
     int count = 0;
     LinkList p = L;
     while (p != nullptr && count < i - 1) {
@@ -76,7 +78,7 @@ int LinkDelete_L(LinkList &L, int i, ElemType &e) {
     // 请补全代码
 
 
-    //先找到这个元素再说吧，当然我们要找的是前一个元素
+    // 先找到这个元素再说吧，当然我们要找的是前一个元素
     LinkList p = L;
     int j = 0;
     // 找到第 i-1 个节点（p 指向它）
@@ -111,15 +113,22 @@ int main() {
         printf("1:Insert element\n2:Delete element\n3:Load all elements\n0:Exit\nPlease choose:\n");
         scanf("%d", &a);
         switch (a) {
-            case 1: scanf("%d%d", &i, &x);
-                if (LinkInsert_L(T, i, x) == ERROR) printf("Insert Error!\n"); // 判断i值是否合法，请填空
-                else printf("The Element %d is Successfully Inserted!\n", x);
+            case 1:
+                scanf("%d%d", &i, &x);
+                if (LinkInsert_L(T, i, x) == ERROR)
+                    printf("Insert Error!\n"); // 判断i值是否合法，请填空
+                else
+                    printf("The Element %d is Successfully Inserted!\n", x);
                 break;
-            case 2: scanf("%d", &i);
-                if (LinkDelete_L(T, i, e) == ERROR) printf("Delete Error!\n"); // 判断i值是否合法，请填空
-                else printf("The Element %d is Successfully Deleted!\n", e);
+            case 2:
+                scanf("%d", &i);
+                if (LinkDelete_L(T, i, e) == ERROR)
+                    printf("Delete Error!\n"); // 判断i值是否合法，请填空
+                else
+                    printf("The Element %d is Successfully Deleted!\n", e);
                 break;
-            case 3: LoadLink_L(T);
+            case 3:
+                LoadLink_L(T);
                 break;
             case 0:
                 return 1;
