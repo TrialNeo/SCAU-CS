@@ -1,17 +1,146 @@
+#include <malloc.h>
+#include <stdio.h>
+#define OK 1
+#define ERROR 0
+typedef int Status; // Statusæ˜¯å‡½æ•°çš„ç±»å‹,å…¶å€¼æ˜¯å‡½æ•°ç»“æœçŠ¶æ€ä»£ç ï¼Œå¦‚OKç­‰
+typedef int QElemType;
+#define MAXQSIZE 100 // æœ€å¤§é˜Ÿåˆ—é•¿åº¦(å¯¹äºå¾ªç¯é˜Ÿåˆ—ï¼Œæœ€å¤§é˜Ÿåˆ—é•¿åº¦è¦å‡1)
+
+typedef struct {
+    QElemType *base; // åˆå§‹åŒ–çš„åŠ¨æ€åˆ†é…å­˜å‚¨ç©ºé—´
+    int front; // å¤´æŒ‡é’ˆ,è‹¥é˜Ÿåˆ—ä¸ç©º,æŒ‡å‘é˜Ÿåˆ—å¤´å…ƒç´ 
+    int rear; // å°¾æŒ‡é’ˆ,è‹¥é˜Ÿåˆ—ä¸ç©º,æŒ‡å‘é˜Ÿåˆ—å°¾å…ƒç´ çš„ä¸‹ä¸€ä¸ªä½ç½®
+} SqQueue;
+
+Status InitQueue(SqQueue &Q) {
+    // æ„é€ ä¸€ä¸ªç©ºé˜Ÿåˆ—Qï¼Œè¯¥é˜Ÿåˆ—é¢„å®šä¹‰å¤§å°ä¸ºMAXQSIZE
+    // è¯·è¡¥å…¨ä»£ç 
+    Q.base = (int *) malloc(sizeof(int) * MAXQSIZE);
+    Q.front = 0;
+    Q.rear = 0;
+    return Q.base ? OK : ERROR;
+}
+
+Status EnQueue(SqQueue &Q, QElemType e) {
+    // æ’å…¥å…ƒç´ eä¸ºQçš„æ–°çš„é˜Ÿå°¾å…ƒç´ 
+    // è¯·è¡¥å…¨ä»£ç 
+    if ((Q.rear + 1) % MAXQSIZE) {
+        return ERROR;
+    }
+    Q.base[Q.rear++] = e;
+    return OK;
+}
+
+Status DeQueue(SqQueue &Q, QElemType &e) {
+    // è‹¥é˜Ÿåˆ—ä¸ç©º, åˆ™åˆ é™¤Qçš„é˜Ÿå¤´å…ƒç´ , ç”¨eè¿”å›å…¶å€¼, å¹¶è¿”å›OK; å¦åˆ™è¿”å›ERROR
+    // è¯·è¡¥å…¨ä»£ç 
+    if ((Q.rear + 1) % MAXQSIZE == Q.front) {
+        return ERROR;
+    } else {
+        e = Q.base[Q.rear];
+        Q.rear = (Q.rear + 1) % MAXQSIZE;
+        return OK;
+    }
+}
+
+Status GetHead(SqQueue Q, QElemType &e) {
+    // è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ™ç”¨eè¿”å›é˜Ÿå¤´å…ƒç´ ï¼Œå¹¶è¿”å›OKï¼Œå¦åˆ™è¿”å›ERROR
+    // è¯·è¡¥å…¨ä»£ç 
+    if (Q.front == Q.rear) {
+        return ERROR;
+    } else {
+        return Q.base[Q.front];
+    }
+}
+
+int QueueLength(SqQueue Q) {
+    // è¿”å›Qçš„å…ƒç´ ä¸ªæ•°
+    // è¯·è¡¥å…¨ä»£ç 
+    return (Q.rear - Q.front + MAXQSIZE) % MAXQSIZE;
+}
+
+Status QueueTraverse(SqQueue Q) {
+    // è‹¥é˜Ÿåˆ—ä¸ç©ºï¼Œåˆ™ä»é˜Ÿå¤´åˆ°é˜Ÿå°¾ä¾æ¬¡è¾“å‡ºå„ä¸ªé˜Ÿåˆ—å…ƒç´ ï¼Œå¹¶è¿”å›OKï¼›å¦åˆ™è¿”å›ERROR.
+    int i;
+    i = Q.front;
+    if (QueueLength(Q))
+        printf("The Queue is Empty!"); // è¯·å¡«ç©º
+    else {
+        printf("The Queue is: ");
+        while (i != Q.rear) // è¯·å¡«ç©º
+        {
+            printf("%d ", Q.base[i]); // è¯·å¡«ç©º
+            i = (i + 1) % MAXQSIZE; // è¯·å¡«ç©º
+        }
+    }
+    printf("\n");
+    return OK;
+}
+
+int main() {
+    int a;
+    SqQueue S;
+    QElemType x, e;
+    if (InitQueue(S)) // åˆ¤æ–­é¡ºåºè¡¨æ˜¯å¦åˆ›å»ºæˆåŠŸï¼Œè¯·å¡«ç©º
+    {
+        printf("A Queue Has Created.\n");
+    }
+    while (1) {
+        printf("1:Enter \n2:Delete \n3:Get the Front \n4:Return the Length of the Queue\n5:Load the "
+               "Queue\n0:Exit\nPlease choose:\n");
+        scanf("%d", &a);
+        switch (a) {
+            case 1:
+                scanf("%d", &x);
+                if (EnQueue(S, x))
+                    printf("Enter Error!\n"); // åˆ¤æ–­å…¥é˜Ÿæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Element %d is Successfully Entered!\n", x);
+                break;
+            case 2:
+                if (DeQueue(S, e))
+                    printf("Delete Error!\n"); // åˆ¤æ–­å‡ºé˜Ÿæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Element %d is Successfully Deleted!\n", e);
+                break;
+            case 3:
+                if (GetHead(S, e))
+                    printf("Get Head Error!\n"); // åˆ¤æ–­Get Headæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Head of the Queue is %d!\n", e);
+                break;
+            case 4:
+                printf("The Length of the Queue is %d!\n", QueueLength(S)); // è¯·å¡«ç©º
+                break;
+            case 5:
+                QueueTraverse(S); // è¯·å¡«ç©º
+                break;
+            case 0:
+                return 1;
+        }
+    }
+}
 /*
-Description ´´½¨Ò»¸ö¿ÕµÄÑ­»·¶ÓÁĞ£¬²¢ÊµÏÖÈë¶Ó¡¢³ö¶Ó¡¢·µ»Ø¶ÓÁĞµÄ³¤¶È¡¢·µ»Ø¶ÓÍ·ÔªËØ¡¢¶ÓÁĞµÄ±éÀúµÈ»ù±¾Ëã·¨¡£Çë½«ÏÂÃæµÄ³ÌĞò²¹³äÍêÕû¡£
-ÊäÈë¸ñÊ½
-²âÊÔÑùÀı¸ñÊ½ËµÃ÷£º
-¸ù¾İ²Ëµ¥²Ù×÷£º
-1¡¢ÊäÈë1£¬±íÊ¾ÒªÊµÏÖÈë¶Ó²Ù×÷£¬½ô¸ú×ÅÊäÈëÒªÈë¶ÓµÄÔªËØ
-2¡¢ÊäÈë2£¬±íÊ¾ÒªÊµÏÖ³ö¶Ó²Ù×÷
-3¡¢ÊäÈë3£¬·µ»Ø¶ÓÍ·ÔªËØ
-4¡¢ÊäÈë4£¬·µ»Ø¶ÓÁĞµÄÔªËØ¸öÊı
-5¡¢ÊäÈë5£¬±íÊ¾´Ó¶ÓÍ·µ½¶ÓÎ²Êä³ö¶ÓµÄËùÓĞÔªËØ
-6¡¢ÊäÈë0£¬±íÊ¾³ÌĞò½áÊø
+8584 å¾ªç¯é˜Ÿåˆ—çš„åŸºæœ¬æ“ä½œ
+æ—¶é—´é™åˆ¶:1000MS  ä»£ç é•¿åº¦é™åˆ¶:10KB
+æäº¤æ¬¡æ•°:3772 é€šè¿‡æ¬¡æ•°:1884
+
+é¢˜å‹: ç¼–ç¨‹é¢˜   è¯­è¨€: G++;GCC
+
+Description
+åˆ›å»ºä¸€ä¸ªç©ºçš„å¾ªç¯é˜Ÿåˆ—ï¼Œå¹¶å®ç°å…¥é˜Ÿã€å‡ºé˜Ÿã€è¿”å›é˜Ÿåˆ—çš„é•¿åº¦ã€è¿”å›é˜Ÿå¤´å…ƒç´ ã€é˜Ÿåˆ—çš„éå†ç­‰åŸºæœ¬ç®—æ³•ã€‚è¯·å°†ä¸‹é¢çš„ç¨‹åºè¡¥å……å®Œæ•´ã€‚
+è¾“å…¥æ ¼å¼
+æµ‹è¯•æ ·ä¾‹æ ¼å¼è¯´æ˜ï¼š
+æ ¹æ®èœå•æ“ä½œï¼š
+1ã€è¾“å…¥1ï¼Œè¡¨ç¤ºè¦å®ç°å…¥é˜Ÿæ“ä½œï¼Œç´§è·Ÿç€è¾“å…¥è¦å…¥é˜Ÿçš„å…ƒç´ 
+2ã€è¾“å…¥2ï¼Œè¡¨ç¤ºè¦å®ç°å‡ºé˜Ÿæ“ä½œ
+3ã€è¾“å…¥3ï¼Œè¿”å›é˜Ÿå¤´å…ƒç´ 
+4ã€è¾“å…¥4ï¼Œè¿”å›é˜Ÿåˆ—çš„å…ƒç´ ä¸ªæ•°
+5ã€è¾“å…¥5ï¼Œè¡¨ç¤ºä»é˜Ÿå¤´åˆ°é˜Ÿå°¾è¾“å‡ºé˜Ÿçš„æ‰€æœ‰å…ƒç´ 
+6ã€è¾“å…¥0ï¼Œè¡¨ç¤ºç¨‹åºç»“æŸ
 
 
-ÊäÈëÑùÀı
+è¾“å…¥æ ·ä¾‹
 1
 1
 1
@@ -25,7 +154,7 @@ Description ´´½¨Ò»¸ö¿ÕµÄÑ­»·¶ÓÁĞ£¬²¢ÊµÏÖÈë¶Ó¡¢³ö¶Ó¡¢·µ»Ø¶ÓÁĞµÄ³¤¶È¡¢·µ»Ø¶ÓÍ·ÔªËØ
 0
 
 
-Êä³öÑùÀı
+è¾“å‡ºæ ·ä¾‹
 A Queue Has Created.
 1:Enter
 2:Delete
@@ -90,128 +219,4 @@ The Queue is: 2 3
 5:Load the Queue
 0:Exit
 Please choose:
-
 */
-
-#include<malloc.h>
-#include<stdio.h>
-#define OK 1
-#define ERROR 0
-typedef int Status; // StatusÊÇº¯ÊıµÄÀàĞÍ,ÆäÖµÊÇº¯Êı½á¹û×´Ì¬´úÂë£¬ÈçOKµÈ
-typedef int QElemType;
-#define MAXQSIZE 100 // ×î´ó¶ÓÁĞ³¤¶È(¶ÔÓÚÑ­»·¶ÓÁĞ£¬×î´ó¶ÓÁĞ³¤¶ÈÒª¼õ1)
-
-typedef struct
-{
-   QElemType *base; // ³õÊ¼»¯µÄ¶¯Ì¬·ÖÅä´æ´¢¿Õ¼ä
-   int front; // Í·Ö¸Õë,Èô¶ÓÁĞ²»¿Õ,Ö¸Ïò¶ÓÁĞÍ·ÔªËØ
-   int rear; // Î²Ö¸Õë,Èô¶ÓÁĞ²»¿Õ,Ö¸Ïò¶ÓÁĞÎ²ÔªËØµÄÏÂÒ»¸öÎ»ÖÃ
- }SqQueue;
-
-Status InitQueue(SqQueue &Q)
-{
-// ¹¹ÔìÒ»¸ö¿Õ¶ÓÁĞQ£¬¸Ã¶ÓÁĞÔ¤¶¨Òå´óĞ¡ÎªMAXQSIZE
-// Çë²¹È«´úÂë
-    Q.base = new QElemType[MAXQSIZE]();
-    Q.front = 0;
-    Q.rear = 0;
-    return Q.base?OK:ERROR;
-}
-
-Status EnQueue(SqQueue &Q,QElemType e)
-{
-// ²åÈëÔªËØeÎªQµÄĞÂµÄ¶ÓÎ²ÔªËØ
-// Çë²¹È«´úÂë
-    //ÅĞ¶ÏÊÇ·ñÒÑ¾­ÂúÁË
-    size_t index = (Q.rear+1) % MAXQSIZE;
-    if(index == Q.front% MAXQSIZE){
-        return ERROR;
-    }
-    Q.base[index-1] = e;
-    Q.rear ++;
-    return OK;
-}
-
-Status DeQueue(SqQueue &Q, QElemType &e)
-{
-// Èô¶ÓÁĞ²»¿Õ, ÔòÉ¾³ıQµÄ¶ÓÍ·ÔªËØ, ÓÃe·µ»ØÆäÖµ, ²¢·µ»ØOK; ·ñÔò·µ»ØERROR
-// Çë²¹È«´úÂë
-    //ÅĞ¶ÏÊÇ·ñÎª¿Õ
-    if(Q.rear%MAXQSIZE == Q.front % MAXQSIZE){
-        return ERROR;
-    }
-    e = Q.base[Q.front++];
-    return OK;
-}
-
-Status GetHead(SqQueue Q, QElemType &e)
-{
-// Èô¶ÓÁĞ²»¿Õ£¬ÔòÓÃe·µ»Ø¶ÓÍ·ÔªËØ£¬²¢·µ»ØOK£¬·ñÔò·µ»ØERROR
-// Çë²¹È«´úÂë
-    //ÅĞ¶ÏÊÇ·ñÎª¿Õ
-    if(Q.rear%MAXQSIZE == Q.front% MAXQSIZE){
-        return ERROR;
-    }
-    e = Q.base[Q.front];
-    return OK;
-}
-
-int QueueLength(SqQueue Q)
-{
-// ·µ»ØQµÄÔªËØ¸öÊı
-// Çë²¹È«´úÂë
-    return Q.rear % MAXQSIZE - Q.front % MAXQSIZE;
-
-}
-
-Status QueueTraverse(SqQueue Q)
-{
-// Èô¶ÓÁĞ²»¿Õ£¬Ôò´Ó¶ÓÍ·µ½¶ÓÎ²ÒÀ´ÎÊä³ö¸÷¸ö¶ÓÁĞÔªËØ£¬²¢·µ»ØOK£»·ñÔò·µ»ØERROR.
-	int i;
-	i=Q.front;
-	if(Q.rear%MAXQSIZE == Q.front% MAXQSIZE)printf("The Queue is Empty!");  //ÇëÌî¿Õ
-	else{
-		printf("The Queue is: ");
-		while(i % MAXQSIZE != Q.rear%MAXQSIZE)     //ÇëÌî¿Õ
-		{
-			printf("%d ",Q.base[i % MAXQSIZE]);   //ÇëÌî¿Õ
-			i = i+1;   //ÇëÌî¿Õ
-		}
-	}
-	printf("\n");
-	return OK;
-}
-
-int main()
-{
-	int a;
-  SqQueue S;
-	QElemType x, e;
-  if(InitQueue(S))    // ÅĞ¶ÏË³Ğò±íÊÇ·ñ´´½¨³É¹¦£¬ÇëÌî¿Õ
-	{
-		printf("A Queue Has Created.\n");
-	}
-	while(1)
-	{
-	printf("1:Enter \n2:Delete \n3:Get the Front \n4:Return the Length of the Queue\n5:Load the Queue\n0:Exit\nPlease choose:\n");
-		scanf("%d",&a);
-		switch(a)
-		{
-			case 1: scanf("%d", &x);
-				  if(!EnQueue(S,x)) printf("Enter Error!\n"); // ÅĞ¶ÏÈë¶ÓÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-				  else printf("The Element %d is Successfully Entered!\n", x);
-				  break;
-			case 2: if(!DeQueue(S, e)) printf("Delete Error!\n"); // ÅĞ¶Ï³ö¶ÓÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-				  else printf("The Element %d is Successfully Deleted!\n", e);
-				  break;
-			case 3: if(!GetHead(S, e))printf("Get Head Error!\n"); // ÅĞ¶ÏGet HeadÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-				  else printf("The Head of the Queue is %d!\n", e);
-				  break;
-			case 4: printf("The Length of the Queue is %d!\n",QueueLength(S));  //ÇëÌî¿Õ
-				  break;
-			case 5: QueueTraverse(S); //ÇëÌî¿Õ
-				  break;
-			case 0: return 1;
-		}
-	}
-}

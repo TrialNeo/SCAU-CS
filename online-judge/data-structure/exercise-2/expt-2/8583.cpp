@@ -1,251 +1,120 @@
-/*
-ÊäÈë¸ñÊ½
-²âÊÔÑùÀı¸ñÊ½ËµÃ÷£º
-¸ù¾İ²Ëµ¥²Ù×÷£º
-1¡¢ÊäÈë1£¬±íÊ¾ÒªÊµÏÖPush²Ù×÷£¬½ô¸ú×ÅÊäÈëÒªPushµÄÔªËØ
-2¡¢ÊäÈë2£¬±íÊ¾ÒªÊµÏÖPop²Ù×÷
-3¡¢ÊäÈë3£¬·µ»ØÕ»¶¥ÔªËØ
-4¡¢ÊäÈë4£¬·µ»ØÕ»µÄÔªËØ¸öÊı
-5¡¢ÊäÈë5£¬±íÊ¾´ÓÕ»¶¥µ½Õ»µ×Êä³öÕ»µÄËùÓĞÔªËØ
-6¡¢ÊäÈë0£¬±íÊ¾³ÌĞò½áÊø
-
-
-ÊäÈëÑùÀı
-1
-2
-1
-4
-1
-6
-5
-3
-4
-2
-5
-2
-2
-2
-0
-
-
-Êä³öÑùÀı
-A Stack Has Created.
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 2 is Successfully Pushed!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 4 is Successfully Pushed!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 6 is Successfully Pushed!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Stack is: 6 4 2
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Top Element is 6!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Length of the Stack is 3!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 6 is Successfully Poped!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Stack is: 4 2
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 4 is Successfully Poped!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-The Element 2 is Successfully Poped!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-Pop Error!
-1:Push
-2:Pop
-3:Get the Top
-4:Return the Length of the Stack
-5:Load the Stack
-0:Exit
-Please choose:
-*/
-
-#include<malloc.h>
-#include<stdio.h>
+#include <malloc.h>
+#include <stdio.h>
 #define OK 1
 #define ERROR 0
-#define STACK_INIT_SIZE 100 // ´æ´¢¿Õ¼ä³õÊ¼·ÖÅäÁ¿
-#define STACKINCREMENT 10 // ´æ´¢¿Õ¼ä·ÖÅäÔöÁ¿
+#define STACK_INIT_SIZE 100 // å­˜å‚¨ç©ºé—´åˆå§‹åˆ†é…é‡
+#define STACKINCREMENT 10 // å­˜å‚¨ç©ºé—´åˆ†é…å¢é‡
 
-typedef int SElemType; // ¶¨ÒåÕ»ÔªËØÀàĞÍ
-typedef int Status; // StatusÊÇº¯ÊıµÄÀàĞÍ,ÆäÖµÊÇº¯Êı½á¹û×´Ì¬´úÂë£¬ÈçOKµÈ
+typedef int SElemType; // å®šä¹‰æ ˆå…ƒç´ ç±»å‹
+typedef int Status; // Statusæ˜¯å‡½æ•°çš„ç±»å‹,å…¶å€¼æ˜¯å‡½æ•°ç»“æœçŠ¶æ€ä»£ç ï¼Œå¦‚OKç­‰
 
-struct SqStack
-{
-     SElemType *base; // ÔÚÕ»¹¹ÔìÖ®Ç°ºÍÏú»ÙÖ®ºó£¬baseµÄÖµÎªNULL
-     SElemType *top; // Õ»¶¥Ö¸Õë
-     int stacksize; // µ±Ç°ÒÑ·ÖÅäµÄ´æ´¢¿Õ¼ä£¬ÒÔÔªËØÎªµ¥Î»
-}; // Ë³ĞòÕ»
+struct SqStack {
+    SElemType *base; // åœ¨æ ˆæ„é€ ä¹‹å‰å’Œé”€æ¯ä¹‹åï¼Œbaseçš„å€¼ä¸ºNULL
+    SElemType *top; // æ ˆé¡¶æŒ‡é’ˆ
+    int stacksize; // å½“å‰å·²åˆ†é…çš„å­˜å‚¨ç©ºé—´ï¼Œä»¥å…ƒç´ ä¸ºå•ä½
+}; // é¡ºåºæ ˆ
 
-Status InitStack(SqStack &S)
-{
-// ¹¹ÔìÒ»¸ö¿ÕÕ»S£¬¸ÃÕ»Ô¤¶¨Òå´óĞ¡ÎªSTACK_INIT_SIZE
-// Çë²¹È«´úÂë
+Status InitStack(SqStack &S) {
+    // æ„é€ ä¸€ä¸ªç©ºæ ˆSï¼Œè¯¥æ ˆé¢„å®šä¹‰å¤§å°ä¸ºSTACK_INIT_SIZE
+    // è¯·è¡¥å…¨ä»£ç 
+    S.base = (SElemType *) malloc(sizeof(SElemType) * STACK_INIT_SIZE);
+    S.top = S.base;
     S.stacksize = STACK_INIT_SIZE;
-    S.base = new SElemType[S.stacksize]();
-    S.top = S.base; //×¢ÒâÕâ¸ö£¬²»È»ºóÃætopÊÇÒ°Ö¸Õë
-    return S.base?OK:ERROR;
+    return S.base ? OK : ERROR;
 }
 
-Status Push(SqStack &S,SElemType e)
-{
-// ÔÚÕ»SÖĞ²åÈëÔªËØeÎªĞÂµÄÕ»¶¥ÔªËØ
-// Çë²¹È«´úÂë
-
-    //ÅĞ¶ÏÕ»ÂúÃ»ÓĞ
-    if(S.top-S.base == S.stacksize){
+Status Push(SqStack &S, SElemType e) {
+    // åœ¨æ ˆSä¸­æ’å…¥å…ƒç´ eä¸ºæ–°çš„æ ˆé¡¶å…ƒç´ 
+    // è¯·è¡¥å…¨ä»£ç 
+    if (S.top + 1 - S.base > S.stacksize) {
         return ERROR;
     }
     *S.top++ = e;
     return OK;
 }
 
-Status Pop(SqStack &S,SElemType &e)
-{
-// ÈôÕ»²»¿Õ£¬ÔòÉ¾³ıSµÄÕ»¶¥ÔªËØ£¬ÓÃe·µ»ØÆäÖµ£¬²¢·µ»ØOK£»·ñÔò·µ»ØERROR
-// Çë²¹È«´úÂë
-    //ÅĞ¶ÏÊÇ·ñÔªËØÎª¿Õ
-    if(S.base == S.top){
+Status Pop(SqStack &S, SElemType &e) {
+    // è‹¥æ ˆä¸ç©ºï¼Œåˆ™åˆ é™¤Sçš„æ ˆé¡¶å…ƒç´ ï¼Œç”¨eè¿”å›å…¶å€¼ï¼Œå¹¶è¿”å›OKï¼›å¦åˆ™è¿”å›ERROR
+    // è¯·è¡¥å…¨ä»£ç 
+    if (S.base == S.top) {
         return ERROR;
     }
-    e = *(--S.top); //Õâ¸öÒ²ÊÇÏÈ--²ÅÊÇÒªµ¯³öµÄ¶«Î÷£¬¿Ó2
+    e = *S.top--;
+}
+
+Status GetTop(SqStack S, SElemType &e) {
+    // è‹¥æ ˆä¸ç©ºï¼Œåˆ™ç”¨eè¿”å›Sçš„æ ˆé¡¶å…ƒç´ ï¼Œå¹¶è¿”å›OKï¼›å¦åˆ™è¿”å›ERROR
+    // è¯·è¡¥å…¨ä»£ç 
+    if (S.top == S.base) {
+        return ERROR;
+    }
+    e = *S.top;
+    return OK;
     return OK;
 }
 
-Status GetTop(SqStack S,SElemType &e)
-{
-// ÈôÕ»²»¿Õ£¬ÔòÓÃe·µ»ØSµÄÕ»¶¥ÔªËØ£¬²¢·µ»ØOK£»·ñÔò·µ»ØERROR
-// Çë²¹È«´úÂë
-    if(S.top - S.base == 0){
-        return ERROR;
-    }
-    e = *(S.top-1);
-    return OK;
-}
-
-int StackLength(SqStack S)
-{
-// ·µ»ØÕ»SµÄÔªËØ¸öÊı
-// Çë²¹È«´úÂë
+int StackLength(SqStack S) {
+    // è¿”å›æ ˆSçš„å…ƒç´ ä¸ªæ•°
+    // è¯·è¡¥å…¨ä»£ç 
     return S.top - S.base;
 }
 
-Status StackTraverse(SqStack S)
-{
-// ´ÓÕ»¶¥µ½Õ»µ×ÒÀ´ÎÊä³öÕ»ÖĞµÄÃ¿¸öÔªËØ
-	SElemType *p = S.top;        //ÇëÌî¿Õ
-	if(S.top==S.base)printf("The Stack is Empty!"); //ÇëÌî¿Õ
-	else
-	{
-		printf("The Stack is: ");
-		while(p-S.base)            //ÇëÌî¿Õ
-		{
-		    --p;
-			printf("%d ", *p);
-
-		}
-	}
-	printf("\n");
-	return OK;
+Status StackTraverse(SqStack S) {
+    // ä»æ ˆé¡¶åˆ°æ ˆåº•ä¾æ¬¡è¾“å‡ºæ ˆä¸­çš„æ¯ä¸ªå…ƒç´ 
+    SElemType *p = S.top; // è¯·å¡«ç©º
+    if (!p || p == S.base)
+        printf("The Stack is Empty!"); // è¯·å¡«ç©º
+    else {
+        printf("The Stack is: ");
+        while (p >= S.base) // è¯·å¡«ç©º
+        {
+            printf("%d ", *p--);
+        }
+    }
+    printf("\n");
+    return OK;
 }
 
-int main()
-{
-     int a;
-     SqStack S;
-SElemType x, e;
-     if(InitStack(S))    // ÅĞ¶ÏË³Ğò±íÊÇ·ñ´´½¨³É¹¦£¬ÇëÌî¿Õ
-{
-	printf("A Stack Has Created.\n");
-}
-while(1)
-	{
-    printf("1:Push \n2:Pop \n3:Get the Top \n4:Return the Length of the Stack\n5:Load the Stack\n0:Exit\nPlease choose:\n");
-	scanf("%d",&a);
-		switch(a)
-		{
-			case 1: scanf("%d", &x);
-		      if(!Push(S,x)) printf("Push Error!\n"); // ÅĞ¶ÏPushÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-		      else printf("The Element %d is Successfully Pushed!\n", x);
-		      break;
-		case 2: if(!Pop(S,e)) printf("Pop Error!\n"); // ÅĞ¶ÏPopÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-			  else printf("The Element %d is Successfully Poped!\n", e);
-		  	  break;
-		case 3: if(!GetTop(S,e))printf("Get Top Error!\n"); // ÅĞ¶ÏGet TopÊÇ·ñºÏ·¨£¬ÇëÌî¿Õ
-			  else printf("The Top Element is %d!\n", e);
-		   	  break;
-			case 4: printf("The Length of the Stack is %d!\n",StackLength(S)); //ÇëÌî¿Õ
-				  break;
-			case 5: StackTraverse(S);  //ÇëÌî¿Õ
-				  break;
-			case 0: return 1;
-		}
-	}
+int main() {
+    int a;
+    SqStack S;
+    SElemType x, e;
+    if (InitStack(S)) // åˆ¤æ–­é¡ºåºè¡¨æ˜¯å¦åˆ›å»ºæˆåŠŸï¼Œè¯·å¡«ç©º
+    {
+        printf("A Stack Has Created.\n");
+    }
+    while (1) {
+        printf("1:Push \n2:Pop \n3:Get the Top \n4:Return the Length of the Stack\n5:Load the Stack\n0:Exit\nPlease "
+               "choose:\n");
+        scanf("%d", &a);
+        switch (a) {
+            case 1:
+                scanf("%d", &x);
+                if (Push(S, x))
+                    printf("Push Error!\n"); // åˆ¤æ–­Pushæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Element %d is Successfully Pushed!\n", x);
+                break;
+            case 2:
+                if (Pop(S, e))
+                    printf("Pop Error!\n"); // åˆ¤æ–­Popæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Element %d is Successfully Poped!\n", e);
+                break;
+            case 3:
+                if (GetTop(S, e))
+                    printf("Get Top Error!\n"); // åˆ¤æ–­Get Topæ˜¯å¦åˆæ³•ï¼Œè¯·å¡«ç©º
+                else
+                    printf("The Top Element is %d!\n", e);
+                break;
+            case 4:
+                printf("The Length of the Stack is %d!\n", StackLength(S)); // è¯·å¡«ç©º
+                break;
+            case 5:
+                StackTraverse(S); // è¯·å¡«ç©º
+                break;
+            case 0:
+                return 1;
+        }
+    }
 }
