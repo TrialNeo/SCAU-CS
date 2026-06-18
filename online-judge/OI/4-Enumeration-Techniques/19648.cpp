@@ -1,16 +1,15 @@
 #include <iostream>
 using namespace std;
-
 typedef long long ll;
-int main() {
+
+
+int main(int argc, char *argv[]) {
     ll k = 0;
-    scanf("%ld", &k);
-    ll x = k + 2;
-    for (ll y = k + 1; x >= y; y++) {
-        ll q = k * y / (y - k);
-        if (q * (y - k) == k * y) {
-            x = q;
-            printf("1/%ld=1/%ld+1/%ld\n", k, x, y);
+    scanf("%lld", &k);
+    for (ll y = k + 1; y <= 2 * k; y++) {
+        const ll x = k + (k * k) / (y - k);
+        if ((x-k) * (y - k) == k* k) {//看看有没有整除
+            printf("1/%lld=1/%lld+1/%lld\n", k, x, y);
         }
     }
 }

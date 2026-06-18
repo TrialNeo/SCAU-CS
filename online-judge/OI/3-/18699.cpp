@@ -7,7 +7,7 @@ using namespace std;
 
 void merge_sort(int *A, int x, int y, int *T) {
     if (y - x > 1) {
-        const unsigned m = x + (y - x) / 2;
+        const unsigned m = (x + y) / 2;
         merge_sort(A, x, m, T);
         merge_sort(A, m, y, T);
 

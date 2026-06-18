@@ -11,13 +11,12 @@ unsigned out(const unsigned n) {
     if (n < 3) {
         return 0;
     }
-    const auto it = memo.find(n);
-    if (it != memo.end()) {
-        return it->second;
+    if (memo.find(n) != memo.end()) {
+        return memo[n];
     }
     // even:1 2 3 4 : 4/2=2     1 2 3: 3/2=1...1
     // odd:even + 余数 or n - 序号为偶数的人数
-    const unsigned even = n / 2, odd = n - even, r = out(odd) + out(even);
+    const unsigned r = out((n + 1) / 2) + out(n / 2);
     memo[n] = r;
     return r;
 }

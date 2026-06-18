@@ -1,18 +1,39 @@
 #include <algorithm>
-#include <iostream>
+#include <cstdio>
+#include <vector>
 using namespace std;
+typedef long long ll;
+
+/* ll solve(const vector<ll> &arr) {
+    vector<ll> ans(arr.size(), 0);
+    ans[0] = arr[0];
+    for (int i = 1; i < arr.size(); i++) {
+        ans[i] = ans[i - 1] > 0 ? ans[i - 1] + arr[i] : arr[i];
+    }
+    auto max_ans = max_element(ans.begin(), ans.end());
+    return *max_ans;
+} */
+
+// 再次优化
+ll solve(const vector<ll> &arr) {
+    ll max_ans = arr[0];
+    ll sum = arr[0];
+    for (int i = 1; i < arr.size(); i++) {
+        sum = sum > 0 ? sum + arr[i] : arr[i];
+        max_ans = max(max_ans, sum);
+    }
+    return max_ans;
+}
 
 
 int main(int argc, char const *argv[]) {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int N = 0;
-    cin >> N;
-    // 上一个最大然后找找会不会变小？？如果变小了当前这个数也是不能要的
-    for (size_t i = 0; i < N; i++) {
+    int n = 0;
+    scanf("%d", &n);
+    vector<ll> arr(n);
+    for (int i = 0; i < n; i++) {
+        scanf("%lld", &arr[i]);
     }
-
-
+    printf("%lld", solve(arr));
     return 0;
 }
 

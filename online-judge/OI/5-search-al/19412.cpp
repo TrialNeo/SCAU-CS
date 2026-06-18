@@ -13,7 +13,7 @@ void print(vector<int> &arr) {
     putchar('\n');
 }
 
-bool cmp(int x, int y) { return x < y; }
+bool cmp(const int x, const int y) { return x < y; }
 
 int main() {
     unsigned n = 0;

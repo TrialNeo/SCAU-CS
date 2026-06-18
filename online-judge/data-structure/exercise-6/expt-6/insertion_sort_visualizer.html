@@ -1,0 +1,186 @@
+
+<style>
+  .arr-box {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: var(--border-radius-md);
+    font-size: 16px; font-weight: 500; border: 0.5px solid var(--color-border-tertiary);
+    transition: all 0.3s ease;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+  .arr-box.sorted { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
+  .arr-box.current { background: #EEEDFE; color: #3C3489; border-color: #7F77DD; }
+  .arr-box.comparing { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
+  .arr-box.swapping { background: #FAECE7; color: #4A1B0C; border-color: #D85A30; }
+  .step-btn {
+    padding: 8px 20px; border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary);
+    color: var(--color-text-primary); font-size: 14px; cursor: pointer;
+  }
+  .step-btn:hover { background: var(--color-background-secondary); }
+  .step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .legend-dot {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px;
+  }
+  .log-line { font-size: 13px; color: var(--color-text-secondary); margin: 3px 0; line-height: 1.5; }
+  .log-line.active { color: var(--color-text-primary); font-weight: 500; }
+</style>
+
+<h2 class="sr-only">插入排序可视化交互器</h2>
+
+<div style="padding: 1rem 0 0;">
+  <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap;">
+    <span style="font-size: 13px; color: var(--color-text-secondary);">初始数组：</span>
+    <span id="init-display" style="font-size: 13px; color: var(--color-text-secondary);"></span>
+  </div>
+
+  <div id="array-display" style="display: flex; gap: 8px; margin: 1rem 0; flex-wrap: wrap;"></div>
+
+  <div id="index-labels" style="display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;"></div>
+
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem;">
+    <button class="step-btn" id="btn-prev" onclick="prevStep()">← 上一步</button>
+    <button class="step-btn" id="btn-next" onclick="nextStep()">下一步 →</button>
+    <button class="step-btn" onclick="reset()"><i class="ti ti-refresh" aria-hidden="true"></i> 重置</button>
+    <span id="progress" style="font-size: 13px; color: var(--color-text-secondary);"></span>
+  </div>
+
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 16px; margin-bottom: 1.5rem; min-height: 52px;">
+    <p id="step-desc" style="margin: 0; font-size: 14px; color: var(--color-text-primary); line-height: 1.6;"></p>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 1.5rem;">
+    <span style="font-size: 12px; color: var(--color-text-secondary);"><span class="legend-dot" style="background:#EEEDFE; border: 0.5px solid #7F77DD;"></span>当前插入元素</span>
+    <span style="font-size: 12px; color: var(--color-text-secondary);"><span class="legend-dot" style="background:#FAEEDA; border: 0.5px solid #EF9F27;"></span>正在比较</span>
+    <span style="font-size: 12px; color: var(--color-text-secondary);"><span class="legend-dot" style="background:#FAECE7; border: 0.5px solid #D85A30;"></span>后移中</span>
+    <span style="font-size: 12px; color: var(--color-text-secondary);"><span class="legend-dot" style="background:#E1F5EE; border: 0.5px solid #5DCAA5;"></span>已排好序</span>
+  </div>
+
+  <div id="log" style="border-top: 0.5px solid var(--color-border-tertiary); padding-top: 12px;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 6px;">操作记录</p>
+    <div id="log-lines"></div>
+  </div>
+</div>
+
+<script>
+const INIT = [5, 2, 8, 1, 9, 3];
+
+let steps = [];
+let stepIdx = 0;
+
+function buildSteps(arr) {
+  const a = [...arr];
+  const s = [];
+  const n = a.length;
+
+  s.push({
+    arr: [...a],
+    sorted: [0],
+    current: -1,
+    comparing: -1,
+    swapping: -1,
+    desc: `开始排序。第一个元素 <b>${a[0]}</b> 默认已排好序（绿色区域）。`,
+    log: `初始数组：[${a.join(', ')}]`
+  });
+
+  for (let i = 1; i < n; i++) {
+    const key = a[i];
+    s.push({
+      arr: [...a],
+      sorted: Array.from({length: i}, (_, k) => k),
+      current: i,
+      comparing: -1,
+      swapping: -1,
+      desc: `取出第 ${i+1} 个元素 <b>${key}</b>（紫色），准备将它插入左边已排好序的部分。`,
+      log: `── 取出 key = ${key}`
+    });
+
+    let j = i - 1;
+    while (j >= 0 && a[j] > key) {
+      s.push({
+        arr: [...a],
+        sorted: Array.from({length: i}, (_, k) => k),
+        current: i,
+        comparing: j,
+        swapping: j + 1,
+        desc: `比较：<b>${a[j]}</b> > <b>${key}</b>，把 ${a[j]} 向右移一位。`,
+        log: `  ${a[j]} > ${key}，将 ${a[j]} 右移`
+      });
+      a[j + 1] = a[j];
+      j--;
+    }
+    a[j + 1] = key;
+
+    s.push({
+      arr: [...a],
+      sorted: Array.from({length: i + 1}, (_, k) => k),
+      current: -1,
+      comparing: -1,
+      swapping: -1,
+      desc: `<b>${key}</b> 插入到位置 ${j+1}，前 ${i+1} 个元素已排好序。`,
+      log: `  ${key} 插入位置 ${j+1} ✓ → [${a.slice(0, i+1).join(', ')}]`
+    });
+  }
+
+  s.push({
+    arr: [...a],
+    sorted: Array.from({length: n}, (_, k) => k),
+    current: -1,
+    comparing: -1,
+    swapping: -1,
+    desc: `🎉 排序完成！最终结果：[${a.join(', ')}]`,
+    log: `完成 → [${a.join(', ')}]`
+  });
+
+  return s;
+}
+
+function render() {
+  const st = steps[stepIdx];
+  const n = st.arr.length;
+
+  const disp = document.getElementById('array-display');
+  const labels = document.getElementById('index-labels');
+  disp.innerHTML = '';
+  labels.innerHTML = '';
+
+  for (let i = 0; i < n; i++) {
+    const box = document.createElement('div');
+    box.className = 'arr-box';
+    if (st.swapping === i) box.classList.add('swapping');
+    else if (st.comparing === i) box.classList.add('comparing');
+    else if (st.current === i) box.classList.add('current');
+    else if (st.sorted.includes(i)) box.classList.add('sorted');
+    box.textContent = st.arr[i];
+    disp.appendChild(box);
+
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `width:44px; text-align:center; font-size:11px; color:var(--color-text-secondary);`;
+    lbl.textContent = i;
+    labels.appendChild(lbl);
+  }
+
+  document.getElementById('step-desc').innerHTML = st.desc;
+  document.getElementById('progress').textContent = `步骤 ${stepIdx + 1} / ${steps.length}`;
+  document.getElementById('btn-prev').disabled = stepIdx === 0;
+  document.getElementById('btn-next').disabled = stepIdx === steps.length - 1;
+
+  const logDiv = document.getElementById('log-lines');
+  logDiv.innerHTML = '';
+  steps.slice(0, stepIdx + 1).forEach((s, idx) => {
+    const p = document.createElement('p');
+    p.className = 'log-line' + (idx === stepIdx ? ' active' : '');
+    p.textContent = s.log;
+    logDiv.appendChild(p);
+  });
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+function nextStep() { if (stepIdx < steps.length - 1) { stepIdx++; render(); } }
+function prevStep() { if (stepIdx > 0) { stepIdx--; render(); } }
+function reset() { stepIdx = 0; render(); }
+
+steps = buildSteps(INIT);
+document.getElementById('init-display').textContent = `[${INIT.join(', ')}]`;
+render();
+</script>

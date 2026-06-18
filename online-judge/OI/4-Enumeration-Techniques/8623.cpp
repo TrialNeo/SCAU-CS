@@ -4,25 +4,32 @@ using namespace std;
 typedef long long ll;
 
 
-long long H(int n) {
+// 分析一下这个函数是干什么的吧，举例子
+// n = 1: res = 0 + 1/1 = 1;
+// n = 2; res = 0 + 2/1 = 2;
+//        res = 2 + 2/2 = 2 + 1 = 3
+// n = 3; res = 0 + 3/1 = 3
+//        res = 3 + 3/2 = 3 + 1 = 4
+//        res = 4 + 3/3 = 4 + 1 = 5
+// 所以超时部分主要在用了n次循环来算这个数，其实我们可以取模来算， 调一下步长
+ll solve(const ll n) {
     ll res = 0;
-    int i = 1;
-    while (i <= n) {
-        ll t = n / i; // 当前商
-        ll j = n / t; // floor(n/x) = t 的最大 x
-        res += ll(j - i + 1) * t;
-        i = j + 1; // 跳到下一个区间
+    ll q = 0, r = 0;
+    for (ll i = 1; i <= n; i = r + 1) {
+        q = n / i;
+        r = n / q;
+        res += q * (r - i + 1);
     }
     return res;
 }
 
 int main() {
     ll n = 0;
-    scanf("%d", &n);
+    scanf("%lld", &n);
     ll l = 0;
     for (int i = 0; i < n; i++) {
-        scanf("%d", &l);
-        printf("%ld\n", H(l));
+        scanf("%lld", &l);
+        printf("%lld\n", solve(l));
     }
 }
 

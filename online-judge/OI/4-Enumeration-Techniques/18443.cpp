@@ -1,10 +1,11 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 typedef long long ll;
 
 // 判断是否有重复数字
-bool check_repeat_num(ll n, ll n2) {
+/*bool check_repeat_num(ll n, ll n2) {
     // 把字符换成string
     string n_str = to_string(n) + to_string(n2);
     for (int i = 0; i < n_str.size(); i++) {
@@ -17,19 +18,54 @@ bool check_repeat_num(ll n, ll n2) {
         }
     }
     return false;
+}*/
+
+
+// 利用前缀和的优化版本
+/* bool check(ll n) {
+    bool exist[10] = {false};
+    while (n) {
+        ll m = n % 10;
+        n /= 10;
+        if (!m) {
+            continue;
+        }
+        if (exist[m]) {
+            return false;
+        }
+        exist[m] = true;
+    }
+    return true;
+}
+ */
+
+
+bool check_repeat_num(ll x, ll y) {
+    ll n = x + y * 1e5;
+    vector<bool> flags(9, false);
+    while (n) {
+        if (const int w = n % 10) {
+            if (flags[w]) {
+                return false;
+            }
+            flags[w] = true;
+        }
+        n /= 10;
+    }
+    return true;
 }
 
 
 int main() {
     ll n = 0;
-    while (scanf("%ld", &n) && n) {
-        for (ll i = 1; i < 99999; i++) {
+    while (scanf("%lld", &n) && n) {
+        for (ll i = 1; i < 1e5; i++) {
             ll l = n * i;
-            if (l > 99999) {
+            if (l >= 1e5) {
                 break;
             }
             if (!check_repeat_num(l, i)) {
-                printf("%05d/%05d=%d\n", l, i, n);
+                printf("%05lld/%05lld=%lld\n", l, i, n);
             }
         }
         putchar('\n');
