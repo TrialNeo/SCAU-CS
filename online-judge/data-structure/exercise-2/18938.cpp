@@ -34,18 +34,27 @@ a->2->b
 c->1->b
 */
 
+#include <cstdio>
 #include <iostream>
 using namespace std;
-#include <cstdio>
 
-void hanoi(int n, string from, string to, string mid) {
-    if (n == 1) {
+
+/**
+ * @brief
+ *
+ * @param n 一共有n个盘子
+ * @param from 从哪里
+ * @param to  移到哪里
+ * @param mid 中间要放在哪里
+ */
+void hanoi(int n, string &from, string &to, string &mid) {
+    if (n == 1) { // 只有一个的时候直接放过去不就好了吗，分解成最小问题了
         cout << from << "->" << 1 << "->" << to << '\n';
         return;
     }
-    hanoi(n - 1, from, mid, to);
-    cout << from << "->" << n << "->" << to << "\n";
-    hanoi(n - 1, mid, from, to);
+    hanoi(n - 1, from, mid, to); // 先把n上面的n-1个放到一边
+    cout << from << "->" << n << "->" << to << "\n"; // 直接把最底下的放到目标点
+    hanoi(n - 1, mid, to, from); // 再把放到一边的n-1个放到 那个n的上面
 }
 
 int main(int argc, char const *argv[]) {
