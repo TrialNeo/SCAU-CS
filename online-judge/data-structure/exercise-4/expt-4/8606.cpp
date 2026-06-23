@@ -24,9 +24,9 @@ Status CreateBiTree(BiTree &T) { // 算法6.4
     else {
         if (!(T = (BiTNode *) malloc(sizeof(BiTNode))))
             return ERROR;
-        T->data = ch;
-        CreateBiTree(T->lchild);
-        CreateBiTree(T->rchild);
+        T->data = ch; // 生成根结点
+        CreateBiTree(T->lchild); // 构造左子树
+        CreateBiTree(T->rchild); // 构造右子树
     }
     return OK;
 } // CreateBiTree

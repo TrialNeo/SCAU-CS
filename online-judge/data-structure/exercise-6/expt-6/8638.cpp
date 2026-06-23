@@ -1,23 +1,23 @@
-#include <iostream>
+#include <cstdio>
 #include <vector>
 using namespace std;
 
 typedef long long ll;
 void traversal(const vector<ll> &arr) {
     for (int i = 0; i < arr.size(); ++i) {
-        printf("%d ", arr[i]);
+        printf("%lld ", arr[i]);
     }
     putchar('\n');
 }
 // 插入排序
-void insert_sort(vector<ll> &arr) {
+void s(vector<ll> &arr) {
     for (int i = 1; i < arr.size(); i++) {
-        ll tmp = arr[i];
+        ll key = arr[i];
         int j = i - 1;
-        for (; j >= 0 && tmp < arr[j]; j--) {
+        for (; j >= 0 && key < arr[j]; j--) {
             arr[j + 1] = arr[j];
         }
-        arr[j + 1] = tmp;
+        arr[j + 1] = key;
         traversal(arr);
     }
 }
@@ -30,7 +30,7 @@ int main() {
     for (int i = 0; i < n; ++i) {
         scanf("%lld", &arr[i]);
     }
-    insert_sort(arr);
+    s(arr);
     return 0;
 }
 

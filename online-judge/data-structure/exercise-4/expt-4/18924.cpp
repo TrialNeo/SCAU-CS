@@ -1,29 +1,38 @@
 #include <algorithm>
 #include <cstdio>
-#include <map>
+#include <vector>
+
 using namespace std;
-map<int, unsigned> memo{{1, 0}};
-map<unsigned, unsigned> m_count{{0, 1}};
 
+vector<vector<int>> tree;
+vector<int> width;
 
-// 我们不一定要把这么一颗树构造出来，我们只需要把每个节点对应的每一层的数量统计出来就行了
-// 怎么说呢 比如说我们要插入一个新的节点N 我们先去找N的父节点在哪一层，比如说父节点在第0层，
-// 那么这个子节点N就应该在第0+1=1层，这时候第1层的节点数应该+1
-// 现在再把 子节点N对应第一层的关系存起来复用就行了
+void dfs(int node, int depth) {
+    width[depth]++;
 
-int main(int argc, char const *argv[]) {
-    unsigned n = 0;
-    unsigned m_max = 1; // 记录最大，免得最后再找了
-    int x = 0, y = 0;
-    scanf("%u", &n);
-    // n-1是因为有这个根节点
-    for (int i = 0; i < n - 1; i++) {
-        scanf("%d %d", &x, &y);
-        unsigned dp = memo[x] + 1;
-        memo[y] = dp;
-        m_max = max(m_max, ++m_count[dp]);
+    for (int child: tree[node]) {
+        dfs(child, depth + 1);
     }
-    printf("%u\n", m_max);
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    tree.resize(n + 1);
+    width.resize(n, 0);
+
+    for (int i = 1; i < n; i++) {
+        int parent, child;
+        scanf("%d%d", &parent, &child);
+
+        tree[parent].push_back(child);
+    }
+
+    dfs(1, 0);
+
+    printf("%d", *max_element(width.begin(), width.end()));
+
     return 0;
 }
 
