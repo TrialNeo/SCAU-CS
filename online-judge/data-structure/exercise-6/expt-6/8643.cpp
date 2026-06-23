@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <vector>
 using namespace std;
 
@@ -11,16 +11,15 @@ void traversal(const vector<ll> &arr) {
     putchar('\n');
 }
 
-void shell_sort(vector<ll> &arr) {
+void heap_sort(vector<ll> &arr) {
     for (int i = 0; i < arr.size() - 1; i++) {
-        ll index = i, m = arr[i];
+        auto min_idx = i;
         for (int j = i; j < arr.size(); j++) {
-            if (m > arr[j]) {
-                index = j;
-                m = arr[j];
+            if (arr[min_idx] > arr[j]) {
+                min_idx = j;
             }
         }
-        swap(arr[index], arr[i]);
+        swap(arr[min_idx], arr[i]);
         traversal(arr);
     }
 }
@@ -32,7 +31,7 @@ int main() {
     for (int i = 0; i < n; i++) {
         scanf("%lld", &arr[i]);
     }
-    shell_sort(arr);
+    heap_sort(arr);
 }
 
 /*

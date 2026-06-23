@@ -1,61 +1,41 @@
-#include <iostream>
+#include <cstdio>
+#include <functional>
 #include <vector>
+
 using namespace std;
 
-typedef struct Node {
-    int parent;
-    int left;
-    int right;
-} tree;
-int ans = 0;
 
-void scan_tree(vector<tree> &arr) {
-    int q, p;
-    for (size_t i = 1; i < arr.size(); i++) {
-        scanf("%d %d", &p, &q);
-        if (!arr[p].left) {
-            arr[p].left = q;
+int main() {
+
+    int n = 0;
+    scanf("%d", &n);
+
+    vector<vector<int>> tree(n + 1, vector<int>(3, 0)); // 一棵类似的树，序号是有规律的就可以用了
+
+
+    for (int i = 1; i < n; i++) {
+        int parent, child;
+        scanf("%d%d", &parent, &child);
+        if (tree[parent][1]) {
+            tree[parent][2] = child;
         } else {
-            arr[p].right = q;
-        }
-        arr[q].parent = p;
-    }
-}
-
-
-unsigned find_root(vector<tree> &arr) {
-    for (size_t i = 1; i < arr.size(); i++) {
-        if (arr[i].parent == 0) {
-            return i;
+            tree[parent][1] = child;
         }
     }
-    return 0;
-}
+    int ans = 0;
 
-// 获取树深度
-unsigned get_deep(vector<tree> &arr, unsigned root) {
-    if (root == 0) {
-        return 0;
-    }
-    int L = get_deep(arr, arr[root].left);
-    int R = get_deep(arr, arr[root].right);
-    if (L + R > ans) {
-        ans = L + R;
-    }
-    return max(L, R) + 1;
-}
-
-
-// 先构造再深度优先遍历即可
-int main(int argc, char const *argv[]) {
-    unsigned n = 0;
-    scanf("%u", &n);
-    vector<tree> arr(n + 1, {0, 0, 0});
-    scan_tree(arr);
-    unsigned root = find_root(arr);
-    get_deep(arr, root);
-    printf("%u\n", ans);
-    return 0;
+    function<int(int)> dfs = [&](int node) {
+        if (!node) {
+            return 0;
+        }
+        int first = 0, second = 0;
+        first = dfs(tree[node][1]);
+        second = dfs(tree[node][2]);
+        ans = max(ans, first + second);
+        return 1 + max(first, second);
+    };
+    dfs(1);
+    printf("%d\n", ans);
 }
 
 /*

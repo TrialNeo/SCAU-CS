@@ -1,7 +1,6 @@
 // Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/4/28 13:10.
-#include <algorithm>
-#include <iostream>
+#include <cstdio>
 using namespace std;
 
 
@@ -14,8 +13,8 @@ bool check(unsigned n, unsigned x) {
     // 看看是奇数堆的还是偶数堆的人，奇数堆的就
     if (x % 2) {
         return check((n + 1) / 2, (x + 1) / 2);
-    } else {
         return check(n / 2, x / 2);
+    } else {
     }
 }
 

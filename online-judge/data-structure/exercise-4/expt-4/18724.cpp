@@ -1,22 +1,47 @@
+#include <cstdio>
+#include <functional>
 #include <iostream>
+#include <string>
+#include <vector>
+
+
 using namespace std;
 
+int main() {
 
-void postorder(string pre, string in) {
-    if (pre.empty()) {
-        return;
-    }
-    char root = pre[0];
-    int pos = in.find(root);
-    postorder(pre.substr(1, pos), in.substr(0, pos));
-    postorder(pre.substr(pos + 1), in.substr(pos + 1));
-    cout << root;
-}
 
-int main(int argc, char const *argv[]) {
-    string pre, in;
-    cin >> pre >> in;
-    postorder(pre, in);
+    string pre_seq;
+    string in_seq;
+    string post_seq;
+
+    cin >> pre_seq >> in_seq;
+
+    auto n = pre_seq.size();
+
+    function<void(int, int, int, int)> build_post = [&](int pre_left, int pre_right, int in_left, int in_right) {
+        if (pre_left > pre_right) {    
+            return;
+        }
+
+        char root = pre_seq[pre_left];
+        int root_pos = in_left;
+
+        while (root_pos <= in_right && in_seq[root_pos] != root) {
+            root_pos++;
+        }
+
+        int left_size = root_pos - in_left;
+
+        build_post(pre_left + 1, pre_left + left_size, in_left, root_pos - 1);
+        build_post(pre_left + left_size + 1, pre_right, root_pos + 1, in_right);
+
+        post_seq.push_back(root);
+    };
+
+    build_post(0, n - 1, 0, n - 1);
+
+    printf("%s\n", post_seq.c_str());
+
     return 0;
 }
 

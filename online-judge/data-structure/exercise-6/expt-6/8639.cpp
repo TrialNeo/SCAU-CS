@@ -13,22 +13,24 @@ void traversal(const vector<ll> &arr) {
 }
 
 void binary_insertion_sort(vector<ll> &arr) {
-    const int n = arr.size();
-    for (int i = 1; i < n; i++) {
-        const ll tmp = arr[i];
-        int left = 0, right = n - 1;
+    for (int i = 1; i < arr.size(); i++) {
+        const ll key = arr[i];
+
+        // 由于key前面的序列已经是有序的，这里就是折半查找
+        int left = 0, right = i;
         while (left < right) {
             const int mid = (left + right) / 2;
-            if (arr[mid] < tmp) {
+            if (arr[mid] <= key) {
                 left = mid + 1;
             } else {
                 right = mid;
             }
         }
+        // 把下标为mid到下标为 i-1 的元素全部往右搬一个单位
         for (int j = i - 1; j >= left; j--) {
             arr[j + 1] = arr[j];
         }
-        arr[left] = tmp;
+        arr[left] = key;
         traversal(arr);
     }
 }

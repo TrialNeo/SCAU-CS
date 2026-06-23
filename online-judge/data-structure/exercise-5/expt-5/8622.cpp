@@ -75,7 +75,7 @@ void TraverseHash(HashTable H) { /* 按哈希地址的顺序打印哈希表，�
 }
 
 
-main() {
+int main() {
     float i = 0, j = 0;
     ElemType e;
     HashTable H;
