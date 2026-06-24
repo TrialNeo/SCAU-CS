@@ -2,16 +2,16 @@
 #include <vector>
 using namespace std;
 
-// Search_Bin 二分查找，返回position,0开始 我们定义-1是查找失败，直接背诵就行了
+// Search_Bin 二分查找，返回position, 0 开始 我们定义-1是查找失败，直接背诵就行了
 int Search_Bin(vector<int> &arr, int key) {
     int mid = 0, left = 0, right = arr.size() - 1;
     while (left <= right) {
-        mid = left + (right - left) / 2;
+        mid = (left + right) / 2;
         if (arr[mid] == key) {
             return mid;
         } else if (arr[mid] > key) { // 可能在左边
             right = mid - 1;
-        } else { // 可能在左边
+        } else { // 可能在右边
             left = mid + 1;
         }
     }
