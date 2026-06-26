@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <vector>
 using namespace std;
 
 unsigned solve(unsigned n, unsigned head, unsigned delta) {
@@ -16,7 +15,7 @@ unsigned solve(unsigned n, unsigned head, unsigned delta) {
 
     unsigned a = solve((n + 1) / 2, head, delta * 2); // 去除偶数之后不影响head
     unsigned b =
-            solve(n / 2, head + delta, delta * 2); // 去除基数之后会对head产生影响，下一次要选的应该是偶数堆里面的第一个
+            solve(n / 2, head + delta, delta * 2); // 去除奇数之后会对head产生影响，下一次要选的应该是偶数堆里面的第一个
     return (a && b) ? min(a, b) : a | b;
 }
 

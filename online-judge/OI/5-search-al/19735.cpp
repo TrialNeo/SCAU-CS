@@ -1,10 +1,12 @@
 // Created by Github@TrialNeo(shenpanpro@gmail.com)
 // Created Time 2026/5/29 15:25.
-#include <algorithm>
 #include <cstdio>
+#include <functional>
+#include <math.h>
 #include <vector>
-using namespace std;
 
+using namespace std;
+/*
 bool check(const vector<int> &chessboard, const int q) {
     for (int i = 0; i < q; i++) {
         if (chessboard[i] == chessboard[q] || abs(chessboard[i] - chessboard[q]) == abs(i - q)) {
@@ -44,7 +46,48 @@ int main() {
     }
     return 0;
 }
+ */
 
+int main() {
+    int n = 0;
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        int m = 0, x, y;
+        scanf("%d%d%d", &m, &x, &y);
+        x--, y--;
+        vector<int> board(m); // 通过行号获取列号
+        int ans = 0;
+        function<void(int)> dfs = [&](int row) {
+            if (row == m) {
+                ans++;
+                return;
+            }
+
+            auto check = [&](int col) {
+                for (int r = 0; r < row; r++) {
+                    if (col == board[r] || abs(col - board[r]) == abs(r - row)) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            for (int c = 0; c < m; c++) {
+                if (row == x && c == y) {
+                    continue;
+                }
+                if (check(c)) {
+                    board[row] = c;
+                    dfs(row + 1);
+                }
+            }
+        };
+
+        dfs(0);
+        printf("%d\n", ans);
+    }
+}
 
 /*
 19735 M皇后问题

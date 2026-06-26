@@ -1,11 +1,12 @@
 #include <algorithm>
 #include <cstdio>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 using namespace std;
 
-int main() {
+/* int main() {
     int n;
     scanf("%d", &n);
 
@@ -23,7 +24,7 @@ int main() {
 
     sort(sticks.begin(), sticks.end(), greater<int>());
 
-    for (int k = n; k >= 1; k--) {
+    for (int k = n; k > 0; k--) {
         if (total_len % k != 0) {
             continue;
         }
@@ -79,6 +80,32 @@ int main() {
     }
 
     printf("1\n");
+    return 0;
+}
+ */
+
+
+int main() {
+    int n;
+    cin >> n;
+    vector<unsigned> stick(n);
+    unsigned sum = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> stick[i];
+        sum += stick[i];
+    }
+
+    unsigned ans = 0;
+    function<void(int, int)> dfs = [&](int i, int c) {
+        if (i < 0 && c == 0) {
+
+            return;
+        }
+
+        dfs(i - 1, c);
+    };
+
+
     return 0;
 }
 
