@@ -32,13 +32,13 @@ int main() {
     */
     // 正所谓dfs差不多都能改
     // 可以改进成记忆化搜索
-    vector<vector<int>> memo(n, vector<int>(c + 1, -1));
+    vector<vector<int>> memo(n, vector<int>(c + 1, 0));
 
     function<unsigned(int, unsigned)> solve = [&](int i, unsigned c) -> unsigned { // c是背包的剩余容量
         if (i < 0) {
             return 0;
         }
-        if (memo[i][c] != -1) {
+        if (memo[i][c] != 0) {
             return memo[i][c];
         }
         // 装不下
