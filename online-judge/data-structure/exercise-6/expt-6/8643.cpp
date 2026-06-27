@@ -11,10 +11,11 @@ void traversal(const vector<ll> &arr) {
     putchar('\n');
 }
 
-void heap_sort(vector<ll> &arr) {
-    for (int i = 0; i < arr.size() - 1; i++) {
-        auto min_idx = i;
-        for (int j = i; j < arr.size(); j++) {
+void selection_sort(vector<ll> &arr) {
+    const int len = arr.size();
+    for (int i = 0; i < len - 1; i++) {
+        int min_idx = i;
+        for (int j = i + 1; j < len; j++) {
             if (arr[min_idx] > arr[j]) {
                 min_idx = j;
             }
@@ -31,7 +32,7 @@ int main() {
     for (int i = 0; i < n; i++) {
         scanf("%lld", &arr[i]);
     }
-    heap_sort(arr);
+    selection_sort(arr);
 }
 
 /*

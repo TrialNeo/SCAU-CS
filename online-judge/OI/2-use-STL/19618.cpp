@@ -22,7 +22,20 @@ void solve() {
     q.push(first);
     while (!q.empty()) {
         // 填这个位置
-        
+        LOC cur = q.front();
+        q.pop();
+        if (cur.r == dr && cur.c == dc) {
+            printf("%d\n", cur.s);
+            return;
+        }
+        for (int i = 0; i < 4; i++) {
+            nr = cur.r + dir[i][0]; //row的变化
+            nc = cur.c + dir[i][1]; //col的变化
+            if (d[nr][nc] == '0') {
+                q.push({nr, nc, cur.s+  1});
+                d[nr][nc] = '1';
+            }
+        }
     }
     printf("die\n");
 }
@@ -38,6 +51,8 @@ int main() {
 该程序为多CASE，第1行为CASE的数量
 每一个CASE，第1行为两个数N（行）和M（列）
 然后N行每行M个数，之后是起点坐标和终点坐标sc(行) sr(列) ec(行) er(列)
+//这个出题人懂英文吗，为什么行row用的c??列column用的是r？？神奇
+//他自己写代码的时候又搞对了，很无语
 
 
 输出格式

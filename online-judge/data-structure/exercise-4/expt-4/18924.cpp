@@ -1,37 +1,40 @@
 #include <algorithm>
 #include <cstdio>
+#include <functional>
 #include <vector>
+
 
 using namespace std;
 
-vector<vector<int>> tree;
-vector<int> width;
-
-void dfs(int node, int depth) {
-    width[depth]++;
-
-    for (int child: tree[node]) {
-        dfs(child, depth + 1);
-    }
-}
 
 int main() {
     int n;
     scanf("%d", &n);
 
-    tree.resize(n + 1);
-    width.resize(n, 0);
+    vector<vector<int>> tree(n + 1);
+    vector<int> width(n, 0);
+
 
     for (int i = 1; i < n; i++) {
         int parent, child;
-        scanf("%d%d", &parent, &child);
+        scanf("%d%d", &parent, &child); // 因为是升序的
 
         tree[parent].push_back(child);
     }
 
+
+    function<void(int, int)> dfs = [&](int node, int depth) {
+        width[depth]++;
+
+        for (int child: tree[node]) {
+            dfs(child, depth + 1);
+        }
+    };
+
+
     dfs(1, 0);
 
-    printf("%d", *max_element(width.begin(), width.end()));
+    printf("%d", *max_element(width.begin(), width.end())); // 找到最大宽度
 
     return 0;
 }

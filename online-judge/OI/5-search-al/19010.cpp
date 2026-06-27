@@ -3,26 +3,47 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+
 using namespace std;
 typedef long long ll;
 
 
-void dfs(vector<char> arr) {
-
-}
-
-
 int main(int argc, char *argv[]) {
-    int N = 0, m = 0;
-    scanf("%d %d", &N, &m);
-    vector<char> arr(N);
+    ll N = 0, m = 0;
+    cin >> N >> m;
+    vector<int> arr(N);
     for (int i = 0; i < N; i++) {
-        scanf("%c", &arr[i]);
+        cin >> arr[i];
     }
+    sort(arr.begin(), arr.end());
+    ll ans = -1;
+    if (N == 1 && !arr[0]) {
+        cout << 0;
+        return 0;
+    }
+    do {
+        // 第一个数字不能是0
+        if (arr[0] != 0) {
+            continue;
+        }
+        ll cur_number = 0;
+        // 把arr 组装成long long
+        for (int i = 0; i < N; i++) {
+            cur_number = cur_number * 10 + arr[i];
+        }
+        // 取模判断
+        if (!(cur_number % m)) {
+            if (ans != -1) {
+                ans = min(cur_number, ans);
+            } else {
+                ans = cur_number;
+            }
+        }
+    } while (next_permutation(arr.begin(), arr.end()));
+    cout << ans << endl;
 
     return 0;
 }
-
 
 
 /*
@@ -62,4 +83,4 @@ Description
 
 
 作者 30002692
- */
+*/

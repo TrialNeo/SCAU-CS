@@ -132,12 +132,35 @@ void DFS(ALGraph G, int v) { /* 从第v个顶点出发递归地深度优先遍�
     /* 设置访问标志为TRUE(已访问) */
     /* 访问第v个顶点 */
     /* 对v的尚未访问的邻接点w递归调用DFS */
+    visited[v] = true; /* 标记当前顶点为已访问 */
+    VisitFunc(G.vertices[v].data); /* 访问当前顶点 */
+
+    ArcNode *p = G.vertices[v].firstarc; /* 获取第一个邻接点 */
+    while (p != NULL) {
+        int w = p->adjvex; /* 邻接点下标 */
+        if (!visited[w]) { /* 如果邻接点未被访问 */
+            DFS(G, w); /* 递归访问邻接点 */
+        }
+        p = p->nextarc; /* 移动到下一个邻接点 */
+    }
 }
 void DFSTraverse(ALGraph G) { /* 对图G作深度优先遍历。算法7.4 */
     /* 使用全局变量VisitFunc,使DFS不必设函数指针参数 */
     /* 访问标志数组初始化 */
     /* 对尚未访问的顶点调用DFS */
+    int v;
 
+    /* 初始化访问标记数组 */
+    for (v = 0; v < G.vexnum; ++v) {
+        visited[v] = 0;
+    }
+
+    /* 遍历所有顶点 */
+    for (v = 0; v < G.vexnum; ++v) {
+        if (!visited[v]) { /* 如果顶点未被访问 */
+            DFS(G, v); /* 从该顶点开始深度优先遍历 */
+        }
+    }
     printf("\n");
 }
 

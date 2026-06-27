@@ -35,7 +35,7 @@ void heapify(vector<ll> &arr, int n, int node) {
     }
 }
 
-void heap_sort(vector<ll> &arr) {
+void selection_sort(vector<ll> &arr) {
     const int len = (int) arr.size();
     for (int i = len / 2 - 1; i >= 0; i--) {
         heapify(arr, len, i);
@@ -54,5 +54,5 @@ int main() {
     for (int i = 0; i < n; i++) {
         scanf("%lld", &arr[i]);
     }
-    heap_sort(arr);
+    selection_sort(arr);
 }

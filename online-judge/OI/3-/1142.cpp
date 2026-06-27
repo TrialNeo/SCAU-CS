@@ -4,19 +4,17 @@
 #include <map>
 using namespace std;
 
-map<unsigned, unsigned> memo{{3, 1}};
+map<unsigned, unsigned> memo{{0, 0}, {1, 0}, {2, 0}, {3, 1}};
 
 
-unsigned out(const unsigned n) {
-    if (n < 3) {
-        return 0;
-    }
+// 记忆化搜索算法
+unsigned dfs(const unsigned n) {
     if (memo.find(n) != memo.end()) {
         return memo[n];
     }
     // even:1 2 3 4 : 4/2=2     1 2 3: 3/2=1...1
     // odd:even + 余数 or n - 序号为偶数的人数
-    const unsigned r = out((n + 1) / 2) + out(n / 2);
+    const unsigned r = dfs((n + 1) / 2) + dfs(n / 2);
     memo[n] = r;
     return r;
 }
@@ -24,11 +22,24 @@ unsigned out(const unsigned n) {
 int main(int argc, char *argv[]) {
     unsigned n = 0;
     while (scanf("%u", &n) && n) {
-        printf("%u\n", out(n));
+        printf("%u\n", dfs(n));
     }
 }
-
-
+/*
+Linear DP也是超时
+int main() {
+    int n = 0;
+    while (scanf("%d", &n) && n) {
+        vector<int> memo(n + 1, 0);
+        memo[0] = memo[1] = memo[2] = 1;
+        memo[3] = 0;
+        for (int i = 5; i <= n; i++) {
+            memo[i] = memo[i / 2] + memo[(i + 1) / 2];
+        }
+        printf("%d\n", memo[n]);
+    }
+}
+*/
 /*
 模拟的超时了。。
 vector<unsigned> out_odd(const vector<unsigned> &solids) {
